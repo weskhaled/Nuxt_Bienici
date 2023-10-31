@@ -54,7 +54,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
     </div>
     <div class="header-menu [--primary-6:var(--gray-9)] flex grow-1 justify-end md:justify-between">
       <div class="flex-1 border-l border-zinc-4/20 ![&_.arco-menu]:bg-transparent">
-        <a-menu class="!dark:[&_.arco-menu-item]:text-light" mode="horizontal" :theme="color.value === 'dark' ? 'dark' : 'light'" :default-selected-keys="[currentRoutePath]">
+        <a-menu class="![&_.arco-menu-item:not(:hover)]:bg-transparent !dark:[&_.arco-menu-item]:text-light" mode="horizontal" :theme="color.value === 'dark' ? 'dark' : 'light'" :default-selected-keys="[currentRoutePath]">
           <a-menu-item key="/" @click="async() => await $router.push('/')">
             Accueil
           </a-menu-item>

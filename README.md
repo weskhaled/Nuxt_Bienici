@@ -4,7 +4,7 @@
 
 <p align="center">
 <br>
-<a href="must_update">🖥 Online Preview</a>
+<a href="https://nuxt-bienici.vercel.app/">🖥 Online Preview</a>
 <br><br>
 
 ## Features
