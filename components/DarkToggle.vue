@@ -11,11 +11,26 @@ useHead({
 
 function toggleDark() {
   color.preference = color.value === 'dark' ? 'light' : 'dark'
+
+  if (color.preference === 'light')
+    document?.body.removeAttribute('arco-theme')
+
+  else
+    document?.body.setAttribute('arco-theme', 'dark')
 }
+
+onMounted(() => {
+  if (color.preference === 'light')
+    document?.body.removeAttribute('arco-theme')
+  else
+    document?.body.setAttribute('arco-theme', 'dark')
+})
 </script>
 
 <template>
-  <button class="!outline-none" @click="toggleDark">
-    <div class="i-carbon-sun dark:i-carbon-moon" />
-  </button>
+  <a-button type="text" @click="toggleDark">
+    <template #icon>
+      <div class="i-carbon-sun dark:i-carbon-moon" />
+    </template>
+  </a-button>
 </template>

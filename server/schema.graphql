@@ -1,0 +1,138 @@
+# Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
+enum KeySort {
+  RELEVANCE
+  SURFACEAREA
+  PRICEPERSQUAREMETER
+  PRICE
+}
+
+enum PropertyType {
+  HOUSE
+  FLAT
+  PARKING
+  TERRAIN
+  LOFT
+  SHOP
+  BUILDING
+  CASTLE
+  PREMISES
+  OFFICE
+  TOWNHOUSE
+  OTHERS
+}
+
+enum FilterType {
+  RENT
+  BUY
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+input ISort {
+  """key of sort"""
+  key: KeySort
+
+  """direction of sort"""
+  direction: SortDirection = ASC
+}
+
+input IPagination {
+  """Started from 0"""
+  page: Int!
+
+  """size of page"""
+  perPage: Int
+}
+
+input zoneIdsByTypes {
+  zoneIds: [String],
+}
+
+input IFilters {
+  """type of location"""
+  propertyType: [PropertyType]
+
+  """filterType of location"""
+  filterType: FilterType
+
+  """new of location"""
+  newProperty: Boolean = false
+
+  """zoneIdsByTypes"""
+  zoneIdsByTypes: zoneIdsByTypes
+}
+
+input GetManyInput {
+  pagination: IPagination
+  filters: IFilters
+  sort: ISort
+}
+
+input GetManyPlaceInput {
+  q: String
+}
+
+type Photo {
+  url_photo: String,
+  photo: String,
+  url: String 
+}
+
+type Position {
+  lat: Float
+  lon: Float
+}
+
+type BlurInfo {
+  position: Position
+}
+
+type Bien {
+  city: String
+  id: String
+  photos: [Photo]!
+  description: String
+  floor: Int
+  roomsQuantity: JSON
+  price: JSON
+  surfaceArea: JSON
+  postalCode: String
+  postalCodeForSearchFilters: String
+  publicationDate: String
+  modificationDate: String
+  yearOfConstruction: Int
+  blurInfo: BlurInfo
+}
+
+type Place {
+  id: String
+  name: String
+  type: String
+  insee_code: String
+  boundingBox: JSON
+  zoneIds: JSON
+  ref: String
+}
+
+type GetBienType {
+  total: Float
+  perPage: Float
+  page: Float
+  data: [Bien!]
+}
+
+type GetPlaceType {
+  total: Float
+  data: [Place!]
+}
+# The "Query" type is special: it lists all of the available queries that
+# clients can execute, along with the return type for each. In this
+# case, the "books" query returns an array of zero or more Books (defined above).
+type Query {
+  biens: [Bien]
+  getManyBiens(input: GetManyInput): GetBienType!
+  getManyPlaces(input: GetManyPlaceInput): GetPlaceType!
+}

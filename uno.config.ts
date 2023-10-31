@@ -22,10 +22,44 @@ export default defineConfig({
     }),
     presetTypography(),
     presetWebFonts({
+      // provider: 'google',
       fonts: {
-        sans: 'DM Sans',
-        serif: 'DM Serif Display',
-        mono: 'DM Mono',
+        // these will extend the default theme
+        sans: [
+          {
+            // name: 'Figtree',
+            name: 'Montserrat',
+            // name: 'DM Sans',
+            // name: 'Work Sans',
+            italic: true,
+            weights: ['300', '400', '600', '700', '800'],
+          },
+        ],
+        mono: ['Space Grotesk'],
+        // custom ones
+        script: [
+          {
+            name: 'Kaushan Script',
+            italic: false,
+            weights: ['400'],
+          },
+        ],
+        general: [
+          {
+            name: 'General Sans',
+            italic: false,
+            weights: ['300', '400', '500', '600', '700', '800'],
+            provider: 'fontshare',
+          },
+        ],
+        chillax: [
+          {
+            name: 'chillax',
+            italic: false,
+            weights: ['200', '300', '400', '600', '700'],
+            provider: 'fontshare',
+          },
+        ],
       },
     }),
   ],

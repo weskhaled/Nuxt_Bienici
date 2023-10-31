@@ -1,17 +1,11 @@
-<p align="center">
-<img src="https://user-images.githubusercontent.com/11247099/140462375-7b7ac4db-35b7-453c-8a05-13d8d20282c4.png" width="600"/>
-</p>
-
 <h2 align="center">
-<a href="https://github.com/antfu/vitesse">Vitesse</a> for Nuxt 3
+<a href="https://www.bienici.com">Bienici</a> for Nuxt 3
 </h2><br>
 
 <p align="center">
 <br>
-<a href="https://vitesse-nuxt3.netlify.app/">🖥 Online Preview</a>
+<a href="must_update">🖥 Online Preview</a>
 <br><br>
-<a href="https://stackblitz.com/github/antfu/vitesse-nuxt3"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
-</p>
 
 ## Features
 
@@ -36,6 +30,10 @@
 - 🦾 TypeScript, of course.
 
 - 📲 [PWA](https://github.com/vite-pwa/nuxt) with offline support and auto update behavior.
+
+- 📲 [Apollo Server](https://github.com/apollo-server-integrations/apollo-server-integration-h3) Apollo Server integration for h3 and nuxt.
+
+- 📲 [urql](https://github.com/urql-graphql/urql) A highly customisable and versatile GraphQL client.
 
 
 ## Plugins
@@ -62,20 +60,12 @@ We recommend using [VS Code](https://code.visualstudio.com/) with [Volar](https:
 
 ## Try it now!
 
-### Online
-
-<a href="https://stackblitz.com/github/antfu/vitesse-nuxt3"><img src="https://developer.stackblitz.com/img/open_in_stackblitz.svg" alt=""></a>
-
-### GitHub Template
-
-[Create a repo from this template on GitHub](https://github.com/antfu/vitesse-nuxt3/generate).
-
 ### Clone to local
 
 If you prefer to do it manually with the cleaner git history
 
 ```bash
-npx degit antfu/vitesse-nuxt3 my-nuxt3-app
-cd my-nuxt3-app
+npx degit weskhaled/Nuxt_Bienici bien
+cd bien
 pnpm i # If you don't have pnpm installed, run: npm install -g pnpm
 ```

@@ -1,3 +1,4 @@
+import { vitePluginForArco } from '@arco-plugins/vite-vue'
 import { pwa } from './config/pwa'
 import { appDescription } from './constants/index'
 
@@ -8,7 +9,32 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
+    '@nuxt/devtools',
+    'nuxt-graphql-server',
   ],
+
+  graphqlServer: {
+    url: '/api/graphql',
+    schema: './server/**/*.graphql',
+    codegen: {
+      // Map your internal enum values to your GraphQL's enums.
+      enumValues: '~/graphql/enums/index',
+
+      // Map your internal enum values to your GraphQL's enums.
+      scalars: '~/graphql/scalars/index',
+
+      // Make use of your custom GraphQL Context type and let codegen use it so that the
+      // generated resolvers automatically makes use of it.
+      contextType: '~/server/graphql/GraphQLContext#GraphQLContext',
+
+      // Change the naming convention of your enum keys
+      namingConvention: {
+        enumValues: 'change-case-all#lowerCase',
+      },
+
+      // ... and many more, refer to the plugin docs!
+    },
+  },
 
   experimental: {
     // when using generate, payload js assets included in sw precache manifest
@@ -31,8 +57,14 @@ export default defineNuxtConfig({
     esbuild: {
       options: {
         target: 'esnext',
+        tsconfigRaw: {
+          compilerOptions: {
+            experimentalDecorators: true,
+          },
+        },
       },
     },
+
     prerender: {
       crawlLinks: false,
       routes: ['/'],
@@ -59,6 +91,31 @@ export default defineNuxtConfig({
   pwa,
 
   devtools: {
-    enabled: true,
+    enabled: false,
+  },
+
+  vite: {
+    plugins: [
+      // https://github.com/arco-design/arco-plugins/blob/main/packages/plugin-vite-vue/README.md
+      vitePluginForArco({
+        style: true,
+        modifyVars: {
+          'arcoblue-6': '#00aaff',
+        },
+      }),
+    ],
+    optimizeDeps: {
+      include: [
+        '@arco-design/web-vue',
+      ],
+    },
+  },
+
+  devServer: {
+    port: 3333,
+  },
+
+  build: {
+    transpile: ['@arco-design/web-vue', '@googlemaps/js-api-loader'],
   },
 })
