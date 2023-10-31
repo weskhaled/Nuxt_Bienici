@@ -1,6 +1,5 @@
-import { ofetch } from 'ofetch'
+import { getBiens } from '../services'
 
-const url = 'https://www.bienici.com/realEstateAds-all.json'
 const filters = {
   filterType: 'buy',
   propertyType: ['house', 'flat', 'loft', 'castle', 'townhouse'],
@@ -15,15 +14,6 @@ const filters = {
 }
 
 export default defineEventHandler(async (event) => {
-  if (event.node.req.method === 'GET') {
-    const data = await ofetch(`${url}?filters=${encodeURIComponent(JSON.stringify(filters))}`, {
-      method: 'GET',
-    })
-
-    return data
-  }
-  if (event.node.req.method === 'POST') {
-    // delete a blog by id
-    return 'success'
-  }
+  if (event.node.req.method === 'GET')
+    return await getBiens(filters)
 })

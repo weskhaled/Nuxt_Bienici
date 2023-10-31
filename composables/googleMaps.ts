@@ -1,4 +1,4 @@
-import type { CoreLibrary, MapsLibrary } from '@types/google.maps'
+import type { CoreLibrary, MapsLibrary } from '@typesgoogle.maps'
 import { Loader } from '@googlemaps/js-api-loader'
 
 function mapOptions(coreLibrary: CoreLibrary) {
@@ -15,19 +15,22 @@ function mapOptions(coreLibrary: CoreLibrary) {
     fullscreenControl: false,
   }
 }
-const loader = new Loader({
-  apiKey: 'AIzaSyArAlXAOzPVnONsf-0Uhh1hQ0XAPwGBtuM',
-  version: 'weekly',
-  libraries: ['places'],
-})
 
 export function useGoogleMaps(mapRef: Ref<HTMLElement | null>) {
   const googleMapsApi: Ref<CoreLibrary | null> = ref(null)
   const gMaps: Ref<MapsLibrary | null> = ref(null)
+  const runtimeConfig = useRuntimeConfig()
+  const GOOGLE_API_KEY = runtimeConfig.public.GOOGLE_API_KEY
 
   onMounted(() => {
     if (!mapRef.value)
       return
+
+    const loader = new Loader({
+      apiKey: `${GOOGLE_API_KEY}`,
+      version: 'weekly',
+      libraries: ['places'],
+    })
 
     loader
       .importLibrary('core')

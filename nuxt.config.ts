@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { vitePluginForArco } from '@arco-plugins/vite-vue'
 import { pwa } from './config/pwa'
 import { appDescription } from './constants/index'
@@ -12,6 +13,14 @@ export default defineNuxtConfig({
     '@nuxt/devtools',
     'nuxt-graphql-server',
   ],
+
+  runtimeConfig: {
+    public: {
+      GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+      API_BIEN_URL: process.env.API_BIEN_URL,
+      API_BIEN_SUGGEST: process.env.API_BIEN_SUGGEST,
+    },
+  },
 
   graphqlServer: {
     url: '/api/graphql',
