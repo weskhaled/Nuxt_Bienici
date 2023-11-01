@@ -6,13 +6,19 @@ import 'swiper/css'
 
 export interface Props {
   sliders?: any[]
+  allowTouchMove?: boolean
   options?: { modules?: any[]; autoplay: any; containerClass?: string[] }
 }
 
 const props = withDefaults(defineProps<Props>(), {
   sliders: () => [],
+  allowTouchMove: () => false,
   options: () => ({ modules: ['pagination'], autoplay: { delay: 350, waitForTransition: true }, containerClass: [] }),
 })
+const emit = defineEmits(['update:allowTouchMove'])
+
+const { allowTouchMove } = useVModels(props, emit)
+
 const { y: windowScrollY } = useWindowScroll()
 const isDark = computed(() => useColorMode().value === 'dark')
 const breakpoints = useBreakpoints(breakpointsTailwind)
@@ -91,11 +97,18 @@ watch(windowScrollY, (val) => {
     }
   }
 })
+watch(allowTouchMove, (val) => {
+  if (val)
+    sliderRef.value.allowTouchMove = true
+
+  else
+    sliderRef.value.allowTouchMove = false
+})
 </script>
 
 <template>
   <Swiper
-    ref="sliderWrapperRef" :autoplay="options?.autoplay || false" :allow-touch-move="mdAndLarger" :loop="false"
+    ref="sliderWrapperRef" :autoplay="options?.autoplay || false" :allow-touch-move="mdAndLarger && allowTouchMove" :loop="false"
     :navigation="sliders.length > 1 && options?.modules?.includes('navigation')"
     :pagination="sliders.length > 1 && options?.modules?.includes('pagination') ? pagination : false" :modules="modules"
     class="hero-slider bg-white dark:bg-black" :slides-per-view="1" :space-between="0" :auto-height="false"

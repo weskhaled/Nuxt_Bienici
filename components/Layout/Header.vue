@@ -5,7 +5,10 @@ const color = useColorMode()
 const route = useRoute()
 const router = useRouter()
 
-const currentRoutePath = computed(() => route.path)
+const currentRoutePath = ref([route.path])
+router.afterEach((value) => {
+  currentRoutePath.value = [value.path]
+})
 useHead({
   meta: [{
     id: 'theme-color',
@@ -54,7 +57,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
     </div>
     <div class="header-menu [--primary-6:var(--gray-9)] flex grow-1 justify-end md:justify-between">
       <div class="flex-1 border-l border-zinc-4/20 ![&_.arco-menu]:bg-transparent">
-        <a-menu class="![&_.arco-menu-item:not(:hover)]:bg-transparent !dark:[&_.arco-menu-item]:text-light" mode="horizontal" :theme="color.value === 'dark' ? 'dark' : 'light'" :default-selected-keys="[currentRoutePath]">
+        <a-menu v-model:selected-keys="currentRoutePath" class="![&_.arco-menu-item:not(:hover)]:bg-transparent !dark:[&_.arco-menu-item]:text-light" mode="horizontal" :theme="color.value === 'dark' ? 'dark' : 'light'" :default-selected-keys="currentRoutePath">
           <a-menu-item key="/" @click="async() => await $router.push('/')">
             Accueil
           </a-menu-item>
@@ -68,60 +71,47 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
           </a-menu-item>
         </a-menu>
       </div>
-      <div class="items-center border-l border-zinc-4/20 px-2 !hidden md:flex space-x-1">
-        <a-button class="px-2" size="medium" :type="currentRoutePath === '/' ? 'primary' : 'text'" @click="async() => await $router.push('/')">
-          <span text-sm md:flex>
-            <span font-normal>Accueil</span>
-          </span>
-        </a-button>
-        <a-button class="px-2" size="medium" :type="currentRoutePath === '/search' ? 'primary' : 'text'" @click="async() => await $router.push('/search')">
-          <span text-sm md:flex>
-            <span font-normal>Commencez votre <span class="font-semibold">
-              recherche
-            </span>
-            </span>
-          </span>
-        </a-button>
-      </div>
       <div class="flex items-center space-x-1">
-        <a-button class="" type="text" @click.stop="async() => await toggleFullscreen()">
-          <template #icon>
-            <span :class="[isFullscreen ? 'i-carbon-minimize' : 'i-carbon-center-to-fit']" />
-          </template>
-        </a-button>
-        <div class="hidden items-center border-x border-zinc-4/20 px-2 md:flex">
-          <a-badge :count="9" dot :offset="[-22, 5]" class="[&>.arco-badge-custom-dot]:overflow-visible">
-            <template #content>
-              <span class="pointer-events-none relative block h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_0_1px_var(--color-bg-2)]">
-                <span class="absolute left--0.25 top--0.25 block h-2 w-2 inline-flex animate-ping rounded-full bg-green-400 opacity-75" />
-              </span>
+        <div class="hidden md:flex">
+          <a-button class="" type="text" @click.stop="async() => await toggleFullscreen()">
+            <template #icon>
+              <span :class="[isFullscreen ? 'i-carbon-minimize' : 'i-carbon-center-to-fit']" />
             </template>
-            <a-trigger trigger="click" show-arrow :popup-translate="[130, 5]" class="!fixed !top-12 [&_.arco-trigger-arrow]:bg-zinc-4/20">
-              <a-button shape="circle" class="mx-1" size="small" type="text">
-                <template #icon>
-                  <span i-carbon-earth-filled />
-                </template>
-              </a-button>
+          </a-button>
+          <div class="hidden items-center border-x border-zinc-4/20 px-2 md:flex">
+            <a-badge :count="9" dot :offset="[-22, 5]" class="[&>.arco-badge-custom-dot]:overflow-visible">
               <template #content>
-                <div class="min-w-75 border-1px border-zinc-4/20 rounded-2px bg-white shadow dark:bg-dark-9">
-                  <div flex items-center justify-between p-2 class="border-b border-zinc-4/20 bg-zinc-4/5">
-                    <h3 class="text-3">
-                      Notifications
-                    </h3>
-                    <a-button class="text-3" size="mini" type="text">
-                      Read All
-                    </a-button>
-                  </div>
-                  <div class="relative min-h-45 flex overflow-hidden overflow-y-scroll">
-                    <a-empty class="flex flex-col justify-center" />
-                  </div>
-                </div>
+                <span class="pointer-events-none relative block h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_0_1px_var(--color-bg-2)]">
+                  <span class="absolute left--0.25 top--0.25 block h-2 w-2 inline-flex animate-ping rounded-full bg-green-400 opacity-75" />
+                </span>
               </template>
-            </a-trigger>
-          </a-badge>
+              <a-trigger trigger="click" show-arrow :popup-translate="[130, 5]" class="!fixed !top-12 [&_.arco-trigger-arrow]:bg-zinc-4/20">
+                <a-button shape="circle" class="mx-1" size="small" type="text">
+                  <template #icon>
+                    <span i-carbon-earth-filled />
+                  </template>
+                </a-button>
+                <template #content>
+                  <div class="min-w-75 border-1px border-zinc-4/20 rounded-2px bg-white shadow dark:bg-dark-9">
+                    <div flex items-center justify-between p-2 class="border-b border-zinc-4/20 bg-zinc-4/5">
+                      <h3 class="text-3.2 dark:text-light">
+                        Notifications
+                      </h3>
+                      <a-button class="text-3" size="mini" type="text">
+                        Read All
+                      </a-button>
+                    </div>
+                    <div class="relative min-h-45 flex overflow-hidden overflow-y-scroll">
+                      <a-empty class="flex flex-col justify-center" />
+                    </div>
+                  </div>
+                </template>
+              </a-trigger>
+            </a-badge>
+          </div>
         </div>
         <a-tooltip content="Toggle Dark mode" position="br" mini>
-          <a-button class="px-2" type="text" @click="toggleDark()">
+          <a-button shape="circle" class="px-2" type="text" @click="toggleDark()">
             <template #icon>
               <span class="i-carbon-sun dark:i-carbon-moon mx-1 block h-4 w-4 text-sm" />
             </template>
@@ -133,7 +123,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
               <span class="flex items-center">
                 <span class="i-carbon-user-avatar-filled mr-1 inline-block h-4 w-4 text-sm leading-30px" />
                 <span sm:inline-block>
-                  {{ currentUser ? currentUser?.nickname : 'Nom, Prénom' }}
+                  {{ currentUser ? currentUser?.fullName : 'User' }}
                 </span>
                 <span class="i-carbon-chevron-down ml-0.5 inline-block h-3 w-3 text-sm leading-30px" />
               </span>

@@ -6,17 +6,19 @@ interface Props {
   layoutView?: string
   selectedBien?: any
   viewInMap?: boolean
+  filtersQuery?: any
 }
 
 const props = withDefaults(defineProps<Props>(), {
   layoutView: () => 'LIST',
   selectedBien: () => null,
   viewInMap: () => false,
+  filtersQuery: () => {},
 })
 
 const emit = defineEmits(['selectBien', 'update:layoutView', 'update:selectedBien', 'update:viewInMap'])
 
-const { layoutView, selectedBien, viewInMap } = useVModels(props, emit)
+const { layoutView, selectedBien, viewInMap, filtersQuery } = useVModels(props, emit)
 
 const { client: urqlClient } = useClientHandle()
 
@@ -28,8 +30,10 @@ const variables: Ref<any> = ref({
       perPage: 24,
     },
     filters: {
-      propertyType: [],
-      zoneIdsByTypes: { zoneIds: [] },
+      propertyType: ['TERRAIN'].includes(filtersQuery?.value.filterType) ? [filtersQuery.value?.filterType] : [],
+      filterType: ['RENT', 'BUY'].includes(filtersQuery?.value.filterType) ? filtersQuery.value?.filterType : 'BUY',
+      zoneIdsByTypes: { zoneIds: filtersQuery.value.zoneIds?.map(z => z.extra.zoneIds) || [] },
+      newProperty: filtersQuery.value.filterType === 'NEW',
     },
   },
 })
@@ -93,9 +97,9 @@ const filters = reactive(
   {
     size: 24,
     from: 0,
-    optionsPlaceValue: [],
+    optionsPlaceValue: filtersQuery.value?.zoneIds || [],
     showAllModels: false,
-    filterType: 'RENT',
+    filterType: ['RENT', 'BUY', 'NEW'].includes(filtersQuery?.value.filterType) ? filtersQuery.value?.filterType : [],
     propertyType: [],
     minPrice: 0,
     maxPrice: 0,
@@ -190,9 +194,6 @@ watchDebounced(
 watchDebounced(selectedBien, (value) => {
   emit('selectBien', { bien: value })
 }, { debounce: 100, maxWait: 1000 })
-// onMounted(() => {
-//   console.log(getCurrentInstance().appContext.config.globalProperties)
-// })
 </script>
 
 <template>

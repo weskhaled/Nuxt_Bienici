@@ -1,7 +1,18 @@
 <script setup lang="ts">
+import { useRouteQuery } from '@vueuse/router'
+
 const mapRef = ref<HTMLElement | null>(null)
 const { gMaps } = useGoogleMaps(mapRef)
 
+const filtersQuery = useRouteQuery('filters', '')
+const filters = computed(() => {
+  try {
+    return JSON.parse(decodeURIComponent(filtersQuery.value))
+  }
+  catch (error) {
+    return {}
+  }
+})
 const layoutView = ref('MAP')
 const viewInMap = ref(false)
 const selectedBien: Ref<any> = ref(null)
@@ -31,7 +42,7 @@ function selectBien({ bien }: any) {
         </div>
         <div :class="[layoutView !== 'MAP' ? 'w-2/2' : 'md:w-4/6 lg:w-1/2', viewInMap ? 'translate-x-[calc(100%-70px)] shadow-md' : 'translate-x-0']" class="relative z-5 ml-auto w-full flex transition-all">
           <ClientOnly>
-            <BienList v-model:layoutView="layoutView" v-model:viewInMap="viewInMap" v-model:selectedBien="selectedBien" @select-bien="selectBien" />
+            <BienList v-model:filters-query="filters" v-model:layoutView="layoutView" v-model:viewInMap="viewInMap" v-model:selectedBien="selectedBien" @select-bien="selectBien" />
           </ClientOnly>
         </div>
       </div>
