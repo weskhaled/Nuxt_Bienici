@@ -1,6 +1,7 @@
 <script setup lang='ts'>
 import { gql, useClientHandle } from '@urql/vue'
 import { FilterType, KeySort, PropertyType, getManyPlaces, queryGetManyBiens } from '~/graphql/queries'
+import { mdAndLarger } from '~/common/stores'
 
 interface Props {
   layoutView?: string
@@ -42,7 +43,7 @@ const columns = [
     title: 'City',
     dataIndex: 'city',
     fixed: 'left',
-    width: 240,
+    width: 200,
     sortable: {
       sortDirections: ['ascend', 'descend'],
     },
@@ -77,7 +78,7 @@ const columns = [
     title: 'Actions',
     slotName: 'actions',
     fixed: 'right',
-    width: 200,
+    width: 130,
   },
 ]
 const userLang = ref('fr-FR')
@@ -99,8 +100,8 @@ const filters = reactive(
     from: 0,
     optionsPlaceValue: filtersQuery.value?.zoneIds || [],
     showAllModels: false,
-    filterType: ['RENT', 'BUY', 'NEW'].includes(filtersQuery?.value.filterType) ? filtersQuery.value?.filterType : [],
-    propertyType: [],
+    filterType: ['RENT', 'BUY', 'NEW'].includes(filtersQuery?.value.filterType) ? filtersQuery.value?.filterType : (filtersQuery?.value.filterType === 'TERRAIN' ? 'BUY' : 'RENT'),
+    propertyType: ['TERRAIN'].includes(filtersQuery?.value.filterType) ? [filtersQuery.value?.filterType] : [],
     minPrice: 0,
     maxPrice: 0,
     minRooms: 1,
@@ -217,15 +218,9 @@ watchDebounced(selectedBien, (value) => {
       class="relative h-full w-full flex-1 overflow-hidden border-gray/25 rounded-0 bg-white/95 shadow-black/10 shadow-sm dark:bg-dark-8/95"
       :class="[layoutView === 'MAP' && 'border-l-1px']"
     >
-      <div class="header flex flex-none justify-between bg-slate-1 p-2 leading-6.5 dark:bg-dark-4">
-        <div class="text-3.5">
-          {{ filters.filterType === 'RENT' ? 'Location' : 'Achat' }} à&nbsp;
-          <a-space v-if="filters.optionsPlaceValue.length">
-            <a-tag v-for="item in filters.optionsPlaceValue" :key="item.value" size="small">
-              {{ item.label }}
-            </a-tag>
-          </a-space>
-          <span v-else>France</span>
+      <div class="header flex flex-none items-center justify-between bg-slate-1 p-2 leading-6.5 dark:bg-dark-4">
+        <div class="flex items-center text-3.5">
+          {{ filters.filterType === 'RENT' ? 'Location' : 'Achat' }}
         </div>
         <div class="flex items-center space-x-1">
           <a-button :type="layoutView === 'MAP' ? 'primary' : 'text'" size="mini" @click="() => layoutView = 'MAP'">
@@ -244,15 +239,15 @@ watchDebounced(selectedBien, (value) => {
       </div>
       <div class="content h-[calc(100%-2.585rem)] w-full flex flex-1 flex-col overflow-auto">
         <div class="flex-none p-2 pb-0">
-          <div class="flex space-x-1">
-            <a-select v-model="filters.filterType" class="max-w-60 w-2/6" placeholder="Votre projet" :bordered="true">
+          <div class="flex flex-col md:flex-row space-y-1 md:space-x-1 md:space-y-0">
+            <a-select v-model="filters.filterType" class="w-full !md:max-w-40" placeholder="Votre projet" :bordered="true">
               <a-option v-for="t in FilterType" :key="t" :value="t">
                 <span>{{ t }}</span>
               </a-option>
             </a-select>
             <a-select
               v-model="filters.optionsPlaceValue"
-              class="w-4/6"
+              :max-tag-count="2"
               placeholder="Saisissez une ville, un code postal ou un département"
               :scrollbar="true"
               allow-clear multiple :bordered="true"
@@ -262,76 +257,82 @@ watchDebounced(selectedBien, (value) => {
               <a-option v-for="item of optionsPlaces" :key="item.value" :value="item" :label="item.label" />
             </a-select>
           </div>
-          <div class="mt-2 flex space-x-1">
-            <a-select
-              v-model="filters.propertyType" class="w-1/4" :default-value="[]" placeholder="Type de bien" multiple
-              :scrollbar="true" allow-clear
-            >
-              <a-option v-for="pt in PropertyType" :key="pt" :value="pt">
-                {{ pt.toLowerCase() }}
-              </a-option>
-            </a-select>
-            <a-trigger trigger="click" show-arrow>
-              <a-button class="w-1/4">
-                <span class="text-3">
-                  Budget
-                </span>
-              </a-button>
-              <template #content>
-                <div class="demo-arrow w-80 p-2">
-                  <div class="m--2 bg-gray/10 p-1 text-3.5/7 font-sans dark:text-light">
+          <div class="mt-1 flex space-x-1">
+            <div class="w-full md:w-2/6">
+              <a-select
+                v-model="filters.propertyType" class="md:w-full" :default-value="[]" placeholder="Type de bien" multiple
+                :scrollbar="true" allow-clear :max-tag-count="2"
+              >
+                <a-option v-for="pt in PropertyType" :key="pt" :value="pt">
+                  {{ pt.toLowerCase() }}
+                </a-option>
+              </a-select>
+            </div>
+            <div class="hidden md:w-full md:flex md:flex-1 md:space-x-1">
+              <a-trigger trigger="click" show-arrow>
+                <a-button class="w-1/3">
+                  <span class="text-3">
                     Budget
+                  </span>
+                </a-button>
+                <template #content>
+                  <div class="demo-arrow w-80 p-2">
+                    <div class="m--2 bg-gray/10 p-1 text-3.5/7 font-sans dark:text-light">
+                      Budget
+                    </div>
+                    <div class="pt-4">
+                      <a-slider
+                        v-model:value="rangeBudget" :default-value="[10, 20]" range
+                        :format-tooltip="(value) => `${Intl.NumberFormat(userLang, { style: 'currency', currency: 'EUR' }).format(Math.round((value / 50) * 10000))}`"
+                      />
+                    </div>
                   </div>
-                  <div class="pt-4">
-                    <a-slider
-                      v-model:value="rangeBudget" :default-value="[10, 20]" range
-                      :format-tooltip="(value) => `${Intl.NumberFormat(userLang, { style: 'currency', currency: 'EUR' }).format(Math.round((value / 50) * 10000))}`"
-                    />
+                </template>
+              </a-trigger>
+              <a-trigger trigger="click" show-arrow>
+                <a-button class="w-1/3">
+                  1 à 3 pièces
+                </a-button>
+                <template #content>
+                  <div class="demo-arrow w-80 p-2">
+                    <a-empty />
                   </div>
-                </div>
-              </template>
-            </a-trigger>
-            <a-trigger trigger="click" show-arrow>
-              <a-button class="w-1/4">
-                1 à 3 pièces
-              </a-button>
-              <template #content>
-                <div class="demo-arrow w-80 p-2">
-                  <a-empty />
-                </div>
-              </template>
-            </a-trigger>
-            <a-trigger trigger="click" show-arrow>
-              <a-button class="w-1/4">
-                Surface
-              </a-button>
-              <template #content>
-                <div class="demo-arrow w-80 p-2">
-                  <a-empty />
-                </div>
-              </template>
-            </a-trigger>
+                </template>
+              </a-trigger>
+              <a-trigger trigger="click" show-arrow>
+                <a-button class="w-1/3">
+                  Surface
+                </a-button>
+                <template #content>
+                  <div class="demo-arrow w-80 p-2">
+                    <a-empty />
+                  </div>
+                </template>
+              </a-trigger>
+            </div>
           </div>
-          <div class="flex justify-between py-2">
+          <div class="flex justify-between pt-1">
             <a-button type="outline" size="small" class="flex items-center px-1.5" @click="() => visibleDrawer = true">
-              <span>
+              <span class="hidden sm:block">
                 Afficher tous les critères
               </span>
               <span class="i-carbon-add ml-0.5 h-5 w-4" />
             </a-button>
             <a-button type="primary" status="danger" size="small" class="px-1.5">
               <i class="i-carbon-notification mr-1" />
-              Créer une alerte
+              <span class="hidden sm:block">
+                Créer une alerte
+              </span>
             </a-button>
           </div>
         </div>
         <div class="flex-1 bg-white dark:bg-dark-3">
           <div class="sticky top-0 z-30 bg-slate-1/90 shadow-[0_0_0_1px_var(--color-bg-3)] shadow-sm backdrop-blur backdrop-filter dark:bg-dark-8/95">
             <div class="flex items-center justify-between p-2">
-              <span>
+              <span class="hidden sm:block">
                 {{ total || 0 }} biens en France
               </span>
-              <div class="min-w-70 flex items-center">
+              <div class="w-full flex items-center sm:w-70">
                 <span class="flex-none">
                   Trier par: &nbsp;
                 </span>
@@ -368,9 +369,6 @@ watchDebounced(selectedBien, (value) => {
                     <div class="flex space-x-1">
                       <a-button size="mini" @click="(selectedBien = record, toggleViewInMap())">
                         view in map
-                      </a-button>
-                      <a-button size="mini" @click="() => $message.info('This is an info message')">
-                        more
                       </a-button>
                     </div>
                   </template>
@@ -438,7 +436,10 @@ watchDebounced(selectedBien, (value) => {
                     </a-card>
                   </div>
                 </div>
-                <div class="flex justify-center py-3">
+                <div v-if="!listBiens.length" class="z-3 h-full">
+                  <a-result class="h-full flex flex-col justify-center" status="404" subtitle="Whoops, this search is empty." />
+                </div>
+                <div v-else class="flex justify-center py-3">
                   <a-button type="primary" status="danger" size="small" class="px-1.5">
                     <i class="i-carbon-notification mr-1" />
                     Créer une alerte pour cette recherche
@@ -465,7 +466,7 @@ watchDebounced(selectedBien, (value) => {
               </a-result>
             </div>
             <div class="sticky bottom-0 z-30 m--0 mt-0 flex items-center justify-end border-t-1px border-dark/10 bg-gray-1 px-3 leading-10 dark:border-gray-4/20 dark:bg-dark-9">
-              <a-pagination v-model:current="filters.page" v-model:page-size="filters.size" class="flex items-center [&>.arco-pagination-list]:flex [&>.arco-pagination-list]:items-center" :default-current="1" :total="total || 0" size="small" :page-size-options="[24, 52, 100, 200]" :default-page-size="24" show-total show-page-size :disabled="isFetching" @page-size-change="() => { filters.page = 1 }" />
+              <a-pagination v-model:current="filters.page" v-model:page-size="filters.size" :simple="!mdAndLarger" class="flex items-center [&>.arco-pagination-list]:flex [&>.arco-pagination-list]:items-center" :default-current="1" :total="total || 0" size="small" :page-size-options="[24, 52, 100, 200]" :default-page-size="24" :show-total="mdAndLarger" show-page-size :disabled="isFetching" @page-size-change="() => { filters.page = 1 }" />
             </div>
           </div>
         </div>

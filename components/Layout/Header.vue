@@ -39,7 +39,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
 
 <template>
   <div class="h-14.5 flex items-center justify-between border-b border-zinc-3/30 px-2 md:ml-0 dark:border-zinc-6/30 dark:text-light">
-    <div class="flex grow-0 items-center transition-width duration-300" :class="[sideFixed ? 'w-[calc(11.5rem-1px)]' : 'w-35 md:w-55']">
+    <div class="w-0 flex grow-0 items-center transition-width duration-300 md:w-55 sm:w-35">
       <div class="ml--2 hidden h-full w-9 items-center justify-center md:w-12">
         <a-button type="text" @click="() => (sideHidden = false)">
           <template #icon>
@@ -47,7 +47,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
           </template>
         </a-button>
       </div>
-      <a href="" class="relative" @click.prevent="async () => await $router.push('/')">
+      <a href="" class="relative hidden sm:flex" @click.prevent="async () => await $router.push('/')">
         <span
           class="flex items-center"
         >
@@ -56,8 +56,8 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
       </a>
     </div>
     <div class="header-menu [--primary-6:var(--gray-9)] flex grow-1 justify-end md:justify-between">
-      <div class="flex-1 border-l border-zinc-4/20 ![&_.arco-menu]:bg-transparent">
-        <a-menu v-model:selected-keys="currentRoutePath" class="![&_.arco-menu-item:not(:hover)]:bg-transparent !dark:[&_.arco-menu-item]:text-light" mode="horizontal" :theme="color.value === 'dark' ? 'dark' : 'light'" :default-selected-keys="currentRoutePath">
+      <div class="flex-1 border-zinc-4/20 sm:border-l ![&_.arco-menu]:bg-transparent">
+        <a-menu v-model:selected-keys="currentRoutePath" class="![&_.arco-menu-item:not(:hover)]:bg-transparent ![&>.arco-menu-inner]:pl-0 !dark:[&_.arco-menu-item]:text-light" mode="horizontal" :theme="color.value === 'dark' ? 'dark' : 'light'" :default-selected-keys="currentRoutePath">
           <a-menu-item key="/" @click="async() => await $router.push('/')">
             Accueil
           </a-menu-item>

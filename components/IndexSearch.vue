@@ -51,14 +51,8 @@ function handleSearch() {
 
 <template>
   <div
-    class="relative z-2 ml-0 mt-7 max-w-xl w-full border border-zinc-5/10 rounded-2px bg-white/80 p-5 shadow-black/3 shadow-sm backdrop-blur dark:bg-zinc-9/70"
+    class="relative z-2 ml-0 max-w-xl w-full border border-zinc-5/10 rounded-2px bg-white/80 p-5 shadow-black/3 shadow-sm backdrop-blur md:mt-7 dark:bg-zinc-9/70"
   >
-    <button
-      class="absolute right--6 top--6 z-2 block h-10 w-10 flex content-center justify-center border border-blue-8/20 bg-blue-6/90 backdrop-blur transition-all active:(border-blue-8 bg-blue-7/80) hover:bg-blue-7/90"
-      @click="handleSearch"
-    >
-      <span i-carbon-search m-auto block text-sm leading-8 text-white class="icon-shadow" />
-    </button>
     <div>
       <a-radio-group v-model="filters.filterType" class="font-medium" type="button" size="large">
         <a-radio value="BUY">
@@ -76,26 +70,37 @@ function handleSearch() {
       </a-radio-group>
     </div>
     <div class="mt-3">
-      <div>
-        <a-select
-          v-model="filters.zoneIds"
-          :trigger-props="{
-            updateAtScroll: false,
-            scrollToClose: true,
-          }"
-          size="large"
-          class="w-4/6"
-          placeholder="Saisissez une ville, un code postal ou un département"
-          :scrollbar="true"
-          allow-clear
-          multiple :bordered="true"
-          :loading="loadingPlaces"
-          :filter-option="false" :show-extra-options="false"
-          @popup-visible-change="(visible) => emit('popupVisibleChange', visible) "
-          @search="handleSearchPlaces"
-        >
-          <a-option v-for="item of optionsPlaces" :key="item.value" :value="item" :label="item.label" />
-        </a-select>
+      <div class="w-full flex">
+        <div class="flex-1">
+          <a-select
+            v-model="filters.zoneIds"
+            :trigger-props="{
+              updateAtScroll: false,
+              scrollToClose: true,
+            }"
+            size="large"
+            class="w-full ![&_.arco-select-view-input]:max-w-full"
+            placeholder="Saisissez une ville, un code postal ou un département"
+            :scrollbar="true"
+            allow-clear
+            multiple :bordered="true"
+            :loading="loadingPlaces"
+            :filter-option="false" :show-extra-options="false"
+            @popup-visible-change="(visible) => emit('popupVisibleChange', visible) "
+            @search="handleSearchPlaces"
+          >
+            <a-option v-for="item of optionsPlaces" :key="item.value" :value="item" :label="item.label" />
+          </a-select>
+        </div>
+        <div class="flex-0">
+          <button
+            class="right--6 top--5 z-2 ml-2 h-full w-auto flex flex content-center justify-center border border-blue-8/20 bg-blue-6/90 px-3 backdrop-blur transition-all md:absolute md:h-9 md:flex md:items-center active:(border-blue-8 bg-blue-7/80) hover:bg-blue-7/90"
+            @click="handleSearch"
+          >
+            <span class="hidden text-4 font-400 md:mr-2 md:block">Recherche</span>
+            <span i-carbon-search m-auto block text-sm leading-8 text-white class="icon-shadow" />
+          </button>
+        </div>
       </div>
       <div class="pt-3">
         <a href="javascript:;" class="text-3.8 font-medium text-blue-8 dark:text-blue-1" rel="noopener noreferrer" @click="$router.push('/search')">Ma dernière recherche</a>
