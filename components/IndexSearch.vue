@@ -51,10 +51,10 @@ function handleSearch() {
 
 <template>
   <div
-    class="relative z-2 ml-0 max-w-xl w-full border border-zinc-5/10 rounded-2px bg-white/80 p-5 shadow-black/3 shadow-sm backdrop-blur md:mt-7 dark:bg-zinc-9/70"
+    class="relative z-2 ml-0 max-w-xl w-full border border-zinc-5/10 rounded-2px bg-white/80 p-5 shadow-black/3 shadow-sm backdrop-blur md:mt-7 dark:bg-black/80"
   >
     <div>
-      <a-radio-group v-model="filters.filterType" class="font-medium" type="button" size="large">
+      <a-radio-group v-model="filters.filterType" class="font-medium" type="button" size="medium">
         <a-radio value="BUY">
           Achat
         </a-radio>
@@ -69,8 +69,8 @@ function handleSearch() {
         </a-radio>
       </a-radio-group>
     </div>
-    <div class="mt-3">
-      <div class="w-full flex">
+    <div class="mt-2">
+      <div class="w-full flex flex-col">
         <div class="flex-1">
           <a-select
             v-model="filters.zoneIds"
@@ -78,10 +78,11 @@ function handleSearch() {
               updateAtScroll: false,
               scrollToClose: true,
             }"
-            size="large"
-            class="w-full ![&_.arco-select-view-input]:max-w-full"
+            size="medium"
+            class="font-medium md:w-full !lt-md:[&_.arco-select-view-input]:max-w-180px"
             placeholder="Saisissez une ville, un code postal ou un département"
             :scrollbar="true"
+            :max-tag-count="3"
             allow-clear
             multiple :bordered="true"
             :loading="loadingPlaces"
@@ -94,10 +95,10 @@ function handleSearch() {
         </div>
         <div class="flex-0">
           <button
-            class="right--6 top--5 z-2 ml-2 h-full w-auto flex flex content-center justify-center border border-blue-8/20 bg-blue-6/90 px-3 backdrop-blur transition-all md:absolute md:h-9 md:flex md:items-center active:(border-blue-8 bg-blue-7/80) hover:bg-blue-7/90"
+            class="right--6 top--6 z-2 ml-auto mt-2 h-8 w-auto flex flex content-center items-center justify-center border border-blue-8/20 rounded-1px bg-blue-6/90 px-3 backdrop-blur transition-all md:absolute md:h-9 active:(border-blue-8 bg-blue-7/80) hover:bg-blue-7/90"
             @click="handleSearch"
           >
-            <span class="hidden text-4 font-400 md:mr-2 md:block">Recherche</span>
+            <span class="mr-2 text-4 font-400 text-light-1 md:block">Recherche</span>
             <span i-carbon-search m-auto block text-sm leading-8 text-white class="icon-shadow" />
           </button>
         </div>

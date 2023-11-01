@@ -13,7 +13,7 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   sliders: () => [],
   allowTouchMove: () => false,
-  options: () => ({ modules: ['pagination'], autoplay: { delay: 350, waitForTransition: true }, containerClass: [] }),
+  options: () => ({ modules: ['pagination'], autoplay: { delay: 550, waitForTransition: true }, containerClass: [] }),
 })
 const emit = defineEmits(['update:allowTouchMove'])
 
@@ -236,12 +236,12 @@ watch(allowTouchMove, (val) => {
 
       &.prev {
         left: 0;
-        padding-left: 5px;
+        padding-left: 3px;
       }
 
       &.next {
         right: 0;
-        padding-right: 5px;
+        padding-right: 3px;
       }
 
       div {
@@ -312,7 +312,7 @@ watch(allowTouchMove, (val) => {
 
 /* Gap filler */
 .swiper-pagination {
-  @apply absolute bottom-8 w-full text-center z-11 right-1/2 md:right-4/5 transform translate-x-50% md:translate-x--0% py-2px px-5px rounded-xl w-auto bg-black/75;
+  @apply absolute bottom-14 w-full text-center z-11 right-1/2 md:right-4/5 transform translate-x-50% md:translate-x--0% py-2px px-5px rounded-xl w-auto bg-black/75;
 
   >span.swiper-pagination-bullet {
     @apply relative block float-left m-5px w-2 h-2 rounded-full transition-shadow duration-3 ease;
