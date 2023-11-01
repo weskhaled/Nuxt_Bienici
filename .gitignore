@@ -1,7 +1,11 @@
 node_modules
-*.log
-dist
+*.log*
+.nuxt
+.nitro
+.cache
 .output
 .nuxt
 .env
-.idea/
+dist
+.DS_Store
+*.db*
