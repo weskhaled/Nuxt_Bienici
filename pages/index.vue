@@ -10,7 +10,7 @@ const sliders: Ref<any[]> = ref([
     title: 'Intro',
     content: h('div', { class: 'text-left max-w-3xl ml-0 font-general flex flex-col h-full' }, [
       h('h1', { class: 'font-chillax my-1 md:my-3 font-semibold uppercase text-1.6rem md:text-5.2rem leading-tight ![--animate-delay:0.1s] animate__animated animate__slideInDown' }, 'Start Your'),
-      h('span', { class: 'mb-3 font-chillax font-400 block text-5 md:text-3.6rem/1rem ![--animate-delay:0.05s] animate__delay-0s animate__animated animate__backInUp' }, 'Next project 👋'),
+      h('span', { class: 'mb-3 font-chillax font-400 block text-5 md:text-3.6rem/1rem ![--animate-delay:0.05s] animate__delay-0s animate__animated animate__backInUp' }, 'Next project 💪'),
       h('div', { class: 'text-left flex w-full ml-auto ![--animate-delay:5.15s]' }, [h(IndexSearch, { onPopupVisibleChange(visible) { allowTouchMove.value = !visible }, onHandleSearch: handleSearch, class: 'mx-auto animate__animated animate__slideInDown' })]),
     ]),
     image: {

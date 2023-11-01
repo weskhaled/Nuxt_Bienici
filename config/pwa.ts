@@ -5,6 +5,7 @@ import { appDescription, appName } from '../constants/index'
 const scope = '/'
 
 export const pwa: ModuleOptions = {
+  strategies: 'generateSW',
   registerType: 'autoUpdate',
   scope,
   base: scope,

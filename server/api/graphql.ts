@@ -1,8 +1,8 @@
 import { ApolloServer } from '@apollo/server'
 import { startServerAndCreateH3Handler } from '@as-integrations/h3'
 import { getBiens, getPlaces } from '../services'
-import { schema } from '#graphql/schema'
 import type { Resolvers } from '#graphql/resolver'
+import { schema } from '#graphql/schema'
 
 const resolvers: Resolvers = {
   Query: {
@@ -19,7 +19,12 @@ const resolvers: Resolvers = {
 }
 const apollo = new ApolloServer({ typeDefs: schema, resolvers })
 export default startServerAndCreateH3Handler(apollo, {
-  // context: (event) => {
-  //   console.log(event)
+  // context: ({ event }) => {
+  //   const { headers } = event.node.req
+  //   console.log(headers.authorization)
+  // },
+  // subscriptions: {
+  //   'subscriptions-transport-ws': true,
+  //   'graphql-ws': true,
   // },
 })

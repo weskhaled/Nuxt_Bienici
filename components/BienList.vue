@@ -42,8 +42,7 @@ const columns = [
   {
     title: 'City',
     dataIndex: 'city',
-    fixed: 'left',
-    width: 200,
+    width: 280,
     sortable: {
       sortDirections: ['ascend', 'descend'],
     },
@@ -78,7 +77,7 @@ const columns = [
     title: 'Actions',
     slotName: 'actions',
     fixed: 'right',
-    width: 130,
+    width: 125,
   },
 ]
 const userLang = ref('fr-FR')
@@ -238,7 +237,7 @@ watchDebounced(selectedBien, (value) => {
         </div>
       </div>
       <div class="content h-[calc(100%-2.585rem)] w-full flex flex-1 flex-col overflow-auto">
-        <div class="flex-none p-2 pb-0">
+        <div class="flex-none px-2 py-1">
           <div class="flex flex-col md:flex-row space-y-1 md:space-x-1 md:space-y-0">
             <a-select v-model="filters.filterType" class="w-full !md:max-w-40" placeholder="Votre projet" :bordered="true">
               <a-option v-for="t in FilterType" :key="t" :value="t">
@@ -311,8 +310,8 @@ watchDebounced(selectedBien, (value) => {
               </a-trigger>
             </div>
           </div>
-          <div class="flex justify-between pt-1">
-            <a-button type="outline" size="small" class="flex items-center px-1.5" @click="() => visibleDrawer = true">
+          <div class="mt-1 flex justify-between">
+            <a-button type="primary" size="small" class="flex items-center px-1.5" @click="() => visibleDrawer = true">
               <span class="hidden sm:block">
                 Afficher tous les critères
               </span>
@@ -329,10 +328,10 @@ watchDebounced(selectedBien, (value) => {
         <div class="flex-1 bg-white dark:bg-dark-3">
           <div class="sticky top-0 z-30 bg-slate-1/90 shadow-[0_0_0_1px_var(--color-bg-3)] shadow-sm backdrop-blur backdrop-filter dark:bg-dark-8/95">
             <div class="flex items-center justify-between p-2">
-              <span class="hidden sm:block">
+              <div class="sm:flex-0 hidden sm:flex">
                 {{ total || 0 }} biens en France
-              </span>
-              <div class="w-full flex items-center sm:w-70">
+              </div>
+              <div class="w-full flex items-center sm:w-90">
                 <span class="flex-none">
                   Trier par: &nbsp;
                 </span>
@@ -349,7 +348,7 @@ watchDebounced(selectedBien, (value) => {
               </div>
             </div>
           </div>
-          <div class="relative h-[calc(100%-5.325rem)] p-0">
+          <div class="relative h-[calc(100%-5.3525rem)] p-0">
             <template v-if="layoutView === 'LIST'">
               <div v-if="!errorBiens" ref="contentDataRef" class="m-0 h-full">
                 <a-table
@@ -386,10 +385,11 @@ watchDebounced(selectedBien, (value) => {
                             width: '100%',
                             height: '160px',
                           }"
+                          class="![&_.arco-carousel-arrow>div]:bg-black/60"
                           :auto-play="{ interval: 15000, hoverToPause: true }" indicator-type="dot"
                           show-arrow="hover" animation-name="fade"
                         >
-                          <a-carousel-item v-for="(image, index) in item.photos" :key="image.url">
+                          <a-carousel-item v-for="(image, index) in item.photos.slice(0, 5)" :key="image.url">
                             <img
                               :src="image.url_photo"
                               :style="{
@@ -474,7 +474,7 @@ watchDebounced(selectedBien, (value) => {
     </div>
   </div>
   <a-image-preview-group v-model:visible="visibleImg" v-model:current="currentImg" infinite :src-list="srcListImgs" />
-  <a-drawer popup-container="#layoutMain" class="!z-99 ![&_.arco-drawer]:w-35%" :visible="visibleDrawer" unmount-on-close @ok="() => visibleDrawer = false" @cancel="() => visibleDrawer = false">
+  <a-drawer popup-container="#layoutMain" class="!z-99 ![&_.arco-drawer]:w-85% !md:[&_.arco-drawer]:w-35%" :visible="visibleDrawer" unmount-on-close @ok="() => visibleDrawer = false" @cancel="() => visibleDrawer = false">
     <template #title>
       Title
     </template>
