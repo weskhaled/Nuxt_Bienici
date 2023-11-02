@@ -54,7 +54,7 @@ function handleSearch() {
     class="relative z-2 ml-0 max-w-xl w-full border border-zinc-5/10 rounded-2px bg-white/80 p-5 shadow-black/3 shadow-sm backdrop-blur md:mt-7 dark:bg-black/80"
   >
     <div>
-      <a-radio-group v-model="filters.filterType" class="font-medium" type="button" size="medium">
+      <a-radio-group v-model="filters.filterType" class="font-medium lt-md:w-full" type="button" size="medium">
         <a-radio value="BUY">
           Achat
         </a-radio>
@@ -79,7 +79,7 @@ function handleSearch() {
               scrollToClose: true,
             }"
             size="medium"
-            class="font-medium md:w-full !lt-md:[&_.arco-select-view-input]:max-w-180px"
+            class="font-medium md:w-full !lt-md:[&_.arco-select-view-input]:max-w-220px"
             placeholder="Saisissez une ville, un code postal ou un département"
             :scrollbar="true"
             :max-tag-count="3"
@@ -104,7 +104,7 @@ function handleSearch() {
         </div>
       </div>
       <div class="pt-3">
-        <a href="javascript:;" class="text-3.8 font-medium text-blue-8 dark:text-blue-1" rel="noopener noreferrer" @click="$router.push('/search')">Ma dernière recherche</a>
+        <a href="javascript:;" class="text-3.8 font-medium font-general text-blue-8 dark:text-blue-1" @click="$router.push('/search')">Ma dernière recherche</a>
       </div>
     </div>
   </div>

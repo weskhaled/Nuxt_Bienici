@@ -200,9 +200,9 @@ watchDebounced(selectedBien, (value) => {
   <template v-if="viewInMap">
     <div v-if="layoutView === 'LIST' || mdAndSmaller" class="absolute right-0 top-0 z-21 h-full w-full bg-light/50 transition-all duration-400 dark:bg-black/70" @click="toggleViewInMap()" />
 
-    <div class="absolute" :class="[layoutView === 'MAP' ? 'left-0 top--10' : 'left--3rem top-0']">
+    <div class="absolute z-9" :class="[layoutView === 'MAP' ? 'left-0 top--10' : 'left--3rem top-0']">
       <a-tooltip content="Toggle Map" position="br" mini>
-        <a-button class="px-2 !h-10 !w-12 !rounded-0 !border-none !bg-light-3 !dark:bg-black" block @click="toggleViewInMap()">
+        <a-button class="px-2 shadow-md !h-10 !w-12 !rounded-0 !border-none !bg-white !dark:bg-black" block @click="toggleViewInMap()">
           <template #icon>
             <span :class="[layoutView === 'MAP' ? 'i-carbon-arrow-up' : 'i-carbon-arrow-left']" class="mx-1 block h-6 w-6" />
           </template>

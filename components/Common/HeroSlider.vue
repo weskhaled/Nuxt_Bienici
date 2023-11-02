@@ -12,7 +12,7 @@ export interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   sliders: () => [],
-  allowTouchMove: () => false,
+  allowTouchMove: () => true,
   options: () => ({ modules: ['pagination'], autoplay: { delay: 550, waitForTransition: true }, containerClass: [] }),
 })
 const emit = defineEmits(['update:allowTouchMove'])
@@ -108,7 +108,7 @@ watch(allowTouchMove, (val) => {
 
 <template>
   <Swiper
-    ref="sliderWrapperRef" :autoplay="options?.autoplay || false" :allow-touch-move="mdAndLarger && allowTouchMove" :loop="false"
+    ref="sliderWrapperRef" :autoplay="options?.autoplay || false" :allow-touch-move="allowTouchMove" :loop="false"
     :navigation="sliders.length > 1 && options?.modules?.includes('navigation')"
     :pagination="sliders.length > 1 && options?.modules?.includes('pagination') ? pagination : false" :modules="modules"
     class="hero-slider bg-white dark:bg-black" :slides-per-view="1" :space-between="0" :auto-height="false"

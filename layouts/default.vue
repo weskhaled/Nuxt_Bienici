@@ -12,18 +12,18 @@ const handle = ref<HTMLElement | null>(null)
 </script>
 
 <template>
-  <div class="5xl:container mx-auto bg-light-1 shadow-md shadow-slate-2/25 transition-width dark:bg-dark-9 dark:shadow-slate-8/25" :class="[layoutBoxed ? 'md:container' : 'w-full']">
+  <div class="mx-auto bg-light-1 shadow-md shadow-slate-2/25 transition-width dark:bg-dark-9 dark:shadow-slate-8/25" :class="[layoutBoxed ? 'md:container' : 'w-full']">
     <a-layout class="relative font-sans">
       <a-layout>
         <a-layout-header class="5xl:container fixed z-99 mx-auto w-full bg-white/75 backdrop-blur backdrop-filter dark:bg-black/75" :class="[layoutBoxed ? 'md:container' : 'w-full']">
           <LayoutHeader class="" />
         </a-layout-header>
-        <a-layout class="ml-0 min-h-[calc(100vh-6.175rem)] flex flex-col transition-margin !mt-14.5" :class="[sideFixed ? (smAndSmaller ? '!md:ml-0' : '!md:ml-60') : '!md:ml-0']">
-          <a-layout-content id="layoutMain" class="relative h-full">
+        <a-layout class="ml-0 flex flex-col transition-margin !mt-14.5" :class="[sideFixed ? (smAndSmaller ? '!md:ml-0' : '!md:ml-60') : '!md:ml-0']">
+          <a-layout-content id="layoutMain" class="relative h-full overflow-hidden">
             <slot />
           </a-layout-content>
         </a-layout>
-        <a-layout-footer class="flex-0 w-full md:block">
+        <a-layout-footer class="flex-0 hidden w-full md:block">
           <LayoutFooter />
         </a-layout-footer>
       </a-layout>

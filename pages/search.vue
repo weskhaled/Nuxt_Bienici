@@ -35,12 +35,12 @@ function selectBien({ bien }: any) {
   <Suspense>
     <div class="relative h-full w-full flex overflow-hidden">
       <div
-        class="relative top-0 z-5 h-[calc(100vh-3.6rem)] min-h-160 w-full flex transition-all duration-300 md:h-[calc(100vh-6.175rem)] dark:text-light !transition-color-0"
+        class="relative top-0 z-5 h-[calc(100vh-3.625rem)] min-h-140 w-full flex transition-all duration-300 md:h-[calc(100vh-6.175rem)] dark:text-light !transition-color-0"
       >
-        <div class="absolute left-0 top-0 z-4 mt--0 h-[calc(100vh-6.215rem)] flex transition-all" :class="[layoutView !== 'MAP' ? 'w-2/2' : 'w-2/2 md:w-2/6 lg:w-1/2 z-3', viewInMap && (layoutView === 'MAP' ? 'lt-md:pb-40px' : 'lt-md:pr-50px'), layoutView === 'MAP' ? (viewInMap ? 'lt-md:h-full' : 'lt-md:h-40%') : 'lt-md:h-full']">
+        <div class="absolute left-0 top-0 z-4 mt--0 h-[calc(100vh-6.215rem)] flex transition-all" :class="[layoutView !== 'MAP' ? 'w-2/2' : 'w-2/2 md:w-2/6 lg:w-1/2 z-3', viewInMap && (layoutView === 'MAP' ? 'lt-md:pb-70px' : 'lt-md:pr-50px'), layoutView === 'MAP' ? (viewInMap ? 'lt-md:h-full' : 'lt-md:h-40%') : 'lt-md:h-full']">
           <div id="maps" ref="mapRef" class="h-full min-h-full w-full flex" />
         </div>
-        <div :class="[layoutView !== 'MAP' ? 'w-2/2' : 'md:w-4/6 lg:w-1/2', layoutView === 'MAP' && 'lt-md:top-40% lt-md:h-60%', viewInMap ? (layoutView === 'MAP' ? 'lt-md:translate-y-[calc(100%-40px)] shadow-md' : 'translate-x-[calc(100%-50px)] shadow-md') : 'translate-0']" class="relative z-5 ml-auto w-full flex transition-all-200">
+        <div :class="[layoutView !== 'MAP' ? 'w-2/2' : 'md:w-4/6 lg:w-1/2', layoutView === 'MAP' && 'lt-md:top-40% lt-md:h-60%', viewInMap ? (layoutView === 'MAP' ? 'lt-md:translate-y-[calc(100%-70px)] shadow-md' : 'translate-x-[calc(100%-50px)] shadow-md') : 'translate-0']" class="relative z-5 ml-auto w-full flex transition-all-200">
           <ClientOnly>
             <BienList v-model:filters-query="filters" v-model:layoutView="layoutView" v-model:viewInMap="viewInMap" v-model:selectedBien="selectedBien" @select-bien="selectBien" />
           </ClientOnly>

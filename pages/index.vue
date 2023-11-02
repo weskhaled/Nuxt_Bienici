@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import IndexSearch from '~/components/IndexSearch.vue'
 
-const online = useOnline()
 const router = useRouter()
 const allowTouchMove = ref(true)
 
@@ -46,8 +45,8 @@ async function handleSearch(filters: any) {
 </script>
 
 <template>
-  <div class="5xl:container relative mx-auto shadow-xl">
-    <section class="relative mb--10.5 mt--14.5 font-sans">
+  <div class="relative mx-auto shadow-xl">
+    <section class="relative font-sans !mt--14.5 md:mb--10.25">
       <ClientOnly>
         <CommonHeroSlider v-model:allow-touch-move="allowTouchMove" :grab-cursor="true" class="h-[calc(100vh-0rem)] !max-h-70rem !min-h-400px md:h-[calc(100vh)]" :sliders="sliders" />
       </ClientOnly>
