@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { gql, useClientHandle } from '@urql/vue'
 import { FilterType, KeySort, PropertyType, getManyPlaces, queryGetManyBiens } from '~/graphql/queries'
-import { mdAndLarger } from '~/common/stores'
+import { mdAndLarger, mdAndSmaller } from '~/common/stores'
 
 interface Props {
   layoutView?: string
@@ -198,20 +198,20 @@ watchDebounced(selectedBien, (value) => {
 
 <template>
   <template v-if="viewInMap">
-    <div class="absolute right-0 top-0 z-21 h-full w-full bg-light/70 transition-all duration-400 dark:bg-black/70" @click="(selectedBien = null, toggleViewInMap())" />
+    <div v-if="layoutView === 'LIST' || mdAndSmaller" class="absolute right-0 top-0 z-21 h-full w-full bg-light/50 transition-all duration-400 dark:bg-black/70" @click="toggleViewInMap()" />
 
-    <div class="absolute left--3rem top-0">
+    <div class="absolute" :class="[layoutView === 'MAP' ? 'left-0 top--10' : 'left--3rem top-0']">
       <a-tooltip content="Toggle Map" position="br" mini>
-        <a-button class="px-2 !h-10 !w-12 !rounded-0 !border-none !bg-light-3 !dark:bg-black" block @click="(selectedBien = null, toggleViewInMap())">
+        <a-button class="px-2 !h-10 !w-12 !rounded-0 !border-none !bg-light-3 !dark:bg-black" block @click="toggleViewInMap()">
           <template #icon>
-            <span class="i-carbon-arrow-left mx-1 block h-6 w-6" />
+            <span :class="[layoutView === 'MAP' ? 'i-carbon-arrow-up' : 'i-carbon-arrow-left']" class="mx-1 block h-6 w-6" />
           </template>
         </a-button>
       </a-tooltip>
     </div>
   </template>
   <div
-    class="top-0 z-10 h-full w-full flex flex-col p-0 transition-all"
+    class="top-0 z-10 h-full w-full flex flex-col p-0"
   >
     <div
       class="relative h-full w-full flex-1 overflow-hidden border-gray/25 rounded-0 bg-white/95 shadow-black/10 shadow-sm dark:bg-dark-8/95"
@@ -348,7 +348,7 @@ watchDebounced(selectedBien, (value) => {
               </div>
             </div>
           </div>
-          <div class="relative h-[calc(100%-5.3525rem)] p-0">
+          <div class="relative h-[calc(100%-5.3rem)] p-0">
             <template v-if="layoutView === 'LIST'">
               <div v-if="!errorBiens" ref="contentDataRef" class="m-0 h-full">
                 <a-table
@@ -361,12 +361,12 @@ watchDebounced(selectedBien, (value) => {
                   :loading="isFetching"
                   :scroll="{
                     x: `${widthContentDataRef}px`,
-                    y: `${heightContentDataRef}px`,
+                    y: `${heightContentDataRef ? heightContentDataRef - 1 : 300}px`,
                   }"
                 >
                   <template #actions="{ record }">
                     <div class="flex space-x-1">
-                      <a-button size="mini" @click="(selectedBien = record, toggleViewInMap())">
+                      <a-button size="mini" @click="(selectedBien = record, viewInMap = true)">
                         view in map
                       </a-button>
                     </div>
@@ -408,7 +408,7 @@ watchDebounced(selectedBien, (value) => {
                         class="min-h-35 flex flex-col justify-between dark:text-gray-2"
                         :class="[selectedBien?.id === item.id && 'bg-blue-2 dark:bg-blue-5']"
                       >
-                        <div class="flex-1 cursor-pointer p-2 pb-0" @click="() => selectedBien?.id !== item.id ? selectedBien = item : selectedBien = null">
+                        <div class="flex-1 cursor-pointer p-2 pb-0" @click="() => (selectedBien?.id !== item.id ? (selectedBien = item, viewInMap = true) : selectedBien = null)">
                           <h3 mb-2 text-3.9>
                             {{ `Appartement ${item.roomsQuantity} pièce ${item.surfaceArea} m²` }}
                           </h3>

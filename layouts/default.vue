@@ -23,7 +23,7 @@ const handle = ref<HTMLElement | null>(null)
             <slot />
           </a-layout-content>
         </a-layout>
-        <a-layout-footer class="flex-0">
+        <a-layout-footer class="flex-0 w-full md:block">
           <LayoutFooter />
         </a-layout-footer>
       </a-layout>
