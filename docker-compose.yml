@@ -1,0 +1,13 @@
+version: '3'
+services:
+  db:
+    image: postgres:15-alpine
+    user: root
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    volumes:
+      - ./docker-volumes/postgres:/var/lib/postgresql/data

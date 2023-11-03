@@ -1,10 +1,10 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -24,4 +24,99 @@ model Post {
   viewCount Int      @default(0)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?
+}
+
+model House {
+  uuid                                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                                     String    @unique
+  blurInfo                               Json?
+  city                                   String?
+  postalCode                             String?
+  chargingStations                       Json?
+  thresholdDate                          DateTime?
+  availableDate                          DateTime?
+  hasGeorisquesMention                   Boolean?
+  useJuly2021EnergyPerformanceDiagnostic Boolean?
+  adType                                 String?
+  newOrOld                               String?
+  propertyType                           String?
+  reference                              String?
+  description                            String?
+  publicationDate                        String?
+  modificationDate                       String?
+  newProperty                            Boolean?
+  yearOfConstruction                     Int?
+  toiletQuantity                         Int?
+  landSurfaceArea                        Int?
+  accountType                            String?
+  isBienIciExclusive                     Boolean?
+  isSubjectToRentControl                 Boolean?
+  energyClassification                   String?
+  greenhouseGazClassification            String?
+  energyValue                            Int?
+  greenhouseGazValue                     Int?
+  energyPerformanceDiagnosticDate        String?
+  agencyFeeUrl                           String?
+  energySimulationReferenceDate          String?
+  inventoryOfFixturesFees                Int?
+  averageAnnualEnergyConsumption         Int?
+  maxEnergyConsumption                   Int?
+  minEnergyConsumption                   Int?
+  safetyDeposit                          Int?
+  charges                                Int?
+  agencyRentalFee                        Int?
+  floor                                  Int?
+  floorQuantity                          Int?
+  roomsQuantity                          Int?
+  bedroomsQuantity                       Int?
+  bathroomsQuantity                      Int?
+  showerRoomsQuantity                    Int?
+  terracesQuantity                       Int?
+  balconyQuantity                        Int?
+  parkingPlacesQuantity                  Int?
+  cellarsOrUndergroundsQuantity          Int?
+  surfaceArea                            Int?
+  garagesQuantity                        Int?
+  enclosedParkingQuantity                Int?
+  isDisabledPeopleFriendly               Boolean?
+  hasIntercom                            Boolean?
+  hasFirePlace                           Boolean?
+  hasCaretaker                           Boolean?
+  isDuplex                               Boolean?
+  hasElevator                            Boolean?
+  isFurnished                            Boolean?
+  hasTerrace                             Boolean?
+  hasPool                                Boolean?
+  hasAirConditioning                     Boolean?
+  exposition                             String?
+  chargesMethod                          String?
+  photos                                 Json?
+  price                                  Int?
+  rentExtra                              Int?
+  adCreatedByPro                         Boolean?
+  heating                                String?
+  district                               Json?
+  relevanceBonus                         Int?
+  status                                 Json?
+  addressKnown                           Boolean?
+  isRecent                               Boolean?
+  displayDistrictName                    Boolean?
+  pricePerSquareMeter                    Int?
+  postalCodeForSearchFilters             String?
+  descriptionTextLength                  Int?
+  title                                  String?
+  userRelativeData                       Json?
+  priceHasDecreased                      Boolean?
+  transactionType                        String?
+  adTypeFR                               String?
+  with3dModel                            Boolean?
+  hasGarden                              Boolean?
+  endOfPromotedAsExclusive               Int?
+  opticalFiberStatus                     String?
+  nothingBehindForm                      Boolean?
+  highlightMailContact                   Boolean?
+  hasCellar                              Boolean?
+  customerId                             String?
+  displayInsuranceEstimation             Boolean?
+  phoneDisplays                          Json?
 }
