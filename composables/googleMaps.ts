@@ -1,4 +1,5 @@
-import type { CoreLibrary, MapsLibrary } from '@typesgoogle.maps'
+import { MarkerClusterer } from '@googlemaps/markerclusterer'
+import type { CoreLibrary, MapsLibrary } from '@types/google.maps'
 import { Loader } from '@googlemaps/js-api-loader'
 
 function mapOptions(coreLibrary: CoreLibrary) {
@@ -17,8 +18,14 @@ function mapOptions(coreLibrary: CoreLibrary) {
 }
 
 export function useGoogleMaps(mapRef: Ref<HTMLElement | null>) {
+  const googleMapsCoreApi: Ref<CoreLibrary | null> = ref(null)
   const googleMapsApi: Ref<CoreLibrary | null> = ref(null)
-  const gMaps: Ref<MapsLibrary | null> = ref(null)
+  const gMapsInstance: Ref<MapsLibrary | null> = ref(null)
+  const mapTools: any = reactive({
+    Marker: null,
+    InfoWindow: null,
+  })
+
   const runtimeConfig = useRuntimeConfig()
   const GOOGLE_API_KEY = runtimeConfig.public.GOOGLE_API_KEY
 
@@ -34,13 +41,16 @@ export function useGoogleMaps(mapRef: Ref<HTMLElement | null>) {
 
     loader
       .importLibrary('core')
-      .then((google) => {
-        googleMapsApi.value = google
+      .then((coreApi) => {
+        googleMapsCoreApi.value = coreApi
+        mapTools.Marker = google.maps.Marker
+        mapTools.InfoWindow = google.maps.InfoWindow
       }).then(() => {
         loader
           .importLibrary('maps')
-          .then(({ Map }) => {
-            gMaps.value = new Map(mapRef.value, mapOptions(googleMapsApi.value))
+          .then((googleMaps) => {
+            gMapsInstance.value = new googleMaps.Map(mapRef.value, mapOptions(googleMapsCoreApi.value))
+            googleMapsApi.value = googleMaps
           })
           .catch((e) => {
             console.error(e.message)
@@ -53,6 +63,9 @@ export function useGoogleMaps(mapRef: Ref<HTMLElement | null>) {
 
   return {
     googleMapsApi,
-    gMaps,
+    googleMapsCoreApi,
+    gMapsInstance,
+    MarkerClusterer,
+    mapTools,
   }
 }

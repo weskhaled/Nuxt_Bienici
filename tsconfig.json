@@ -1,4 +1,12 @@
 {
   "extends": "./.nuxt/tsconfig.json",
-  "typeRoots": ["./@types"]
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "types/*": ["./@types", "@typesgoogle.maps"]
+    },
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  }
 }

@@ -8,6 +8,7 @@ interface Props {
   selectedBien?: any
   viewInMap?: boolean
   filtersQuery?: any
+  bienLocalizations?: []
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -15,11 +16,12 @@ const props = withDefaults(defineProps<Props>(), {
   selectedBien: () => null,
   viewInMap: () => false,
   filtersQuery: () => {},
+  bienLocalizations: () => [],
 })
 
-const emit = defineEmits(['selectBien', 'update:layoutView', 'update:selectedBien', 'update:viewInMap'])
+const emit = defineEmits(['selectBien', 'update:layoutView', 'update:selectedBien', 'update:viewInMap', 'update:bienLocalizations'])
 
-const { layoutView, selectedBien, viewInMap, filtersQuery } = useVModels(props, emit)
+const { layoutView, selectedBien, viewInMap, filtersQuery, bienLocalizations } = useVModels(props, emit)
 
 const { client: urqlClient } = useClientHandle()
 
@@ -145,6 +147,7 @@ function handleSearch(value: string) {
       loadingPlaces.value = false
     })
 }
+
 async function getData(variables: any) {
   isFetching.value = true
   errorBiens.value = null
@@ -163,12 +166,15 @@ async function getData(variables: any) {
         if (getManyBiens) {
           listBiens.value = getManyBiens.data
           total.value = getManyBiens.total
+          bienLocalizations.value = getManyBiens.data.map(b => ({ city: b.city, position: b.blurInfo?.position }))
         }
       }
     }
   })
 }
+
 getData(variables.value)
+
 watchDebounced(
   filters,
   (value) => {
@@ -389,7 +395,7 @@ watchDebounced(selectedBien, (value) => {
                           :auto-play="{ interval: 15000, hoverToPause: true }" indicator-type="dot"
                           show-arrow="hover" animation-name="fade"
                         >
-                          <a-carousel-item v-for="(image, index) in item.photos.slice(0, 5)" :key="image.url">
+                          <a-carousel-item v-for="(image, index) in item.photos.slice(0, 3)" :key="image.url">
                             <img
                               :src="image.url_photo"
                               :style="{
