@@ -138,7 +138,9 @@ watch(allowTouchMove, (val) => {
           :class="options.containerClass" :style="{ ...sliderStyles.container }"
         >
           <div v-show="index === activeSlideIndex" :class="{ animate__animated: index === activeSlideIndex }">
-            <component :is="slide.content" />
+            <ClientOnly>
+              <component :is="slide.content" />
+            </ClientOnly>
           </div>
         </div>
       </header>

@@ -16,6 +16,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      BASE_URL: process.env.BASE_URL,
       GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
       API_BIEN_URL: process.env.API_BIEN_URL,
       API_BIEN_SUGGEST: process.env.API_BIEN_SUGGEST,
@@ -116,6 +117,8 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: [
         '@arco-design/web-vue',
+        '@googlemaps/markerclusterer',
+        'fast-deep-equal',
       ],
     },
   },
@@ -125,6 +128,6 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['@arco-design/web-vue', '@googlemaps/js-api-loader', '@googlemaps/markerclusterer'],
+    transpile: ['swiper', '@arco-design/web-vue', '@googlemaps/js-api-loader', '@googlemaps/markerclusterer'],
   },
 })

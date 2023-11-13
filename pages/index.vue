@@ -47,9 +47,7 @@ async function handleSearch(filters: any) {
 <template>
   <div class="relative mx-auto shadow-xl">
     <section class="relative font-sans !mt--14.5 md:mb--10.25">
-      <ClientOnly>
-        <CommonHeroSlider v-model:allow-touch-move="allowTouchMove" :grab-cursor="true" class="h-[calc(100vh-0rem)] !max-h-70rem !min-h-400px md:h-[calc(100vh)]" :sliders="sliders" />
-      </ClientOnly>
+      <CommonHeroSlider v-model:allow-touch-move="allowTouchMove" :grab-cursor="true" class="h-[calc(100vh-0rem)] !max-h-70rem !min-h-400px md:h-[calc(100vh)]" :sliders="sliders" />
     </section>
   </div>
 </template>

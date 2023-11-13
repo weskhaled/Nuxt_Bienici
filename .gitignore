@@ -6,6 +6,7 @@ node_modules
 .output
 .nuxt
 .env
+.env.development
 dist
 .DS_Store
 *.db*
