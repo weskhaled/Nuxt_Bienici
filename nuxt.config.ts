@@ -125,6 +125,6 @@ export default defineNuxtConfig({
   },
 
   build: {
-    transpile: ['@arco-design/web-vue', '@googlemaps/js-api-loader'],
+    transpile: ['@arco-design/web-vue', '@googlemaps/js-api-loader', '@googlemaps/markerclusterer'],
   },
 })

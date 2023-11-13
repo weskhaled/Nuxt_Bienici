@@ -3,9 +3,10 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "types/*": ["./@types", "@typesgoogle.maps"]
+      "types/*": ["./@types", "@typesgoogle.maps", "@googlemaps/markerclusterer"]
     },
     "typeRoots": [
+      "./@types",
       "node_modules/@types"
     ]
   }
