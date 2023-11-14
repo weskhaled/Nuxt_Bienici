@@ -245,7 +245,7 @@ watch(() => selectedBienId.value, (val) => {
   >
     <div
       class="relative h-full w-full flex-1 overflow-hidden border-gray/25 rounded-0 bg-white/95 shadow-black/10 shadow-sm dark:bg-dark-8/95"
-      :class="[layoutView === 'MAP' && 'border-l-1px']"
+      :class="[layoutView === 'MAP' && 'md:border-l-1px']"
     >
       <div class="header flex flex-none items-center justify-between bg-slate-1 p-2 leading-6.5 dark:bg-dark-4">
         <div class="flex items-center text-3.5">
