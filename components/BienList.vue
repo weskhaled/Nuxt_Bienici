@@ -28,8 +28,8 @@ const { layoutView, selectedBien, selectedBienId, viewInMap, filtersQuery, bienL
 
 const { client: urqlClient } = useClientHandle()
 
+const { height: windowHeight } = useWindowSize()
 const listBienRef = ref<HTMLElement | null>(null)
-
 const { y: yListBienRef } = useScroll(listBienRef)
 
 const variables: Ref<any> = ref({
@@ -220,7 +220,7 @@ watch(() => selectedBienId.value, (val) => {
     const el = document.getElementById(val)
     if (el) {
       const { top } = useElementBounding(el)
-      yListBienRef.value += (top.value - 150)
+      yListBienRef.value += (top.value - (mdAndLarger.value ? 150 : (windowHeight.value * 0.4 + 68)))
     }
   }
 })

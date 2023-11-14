@@ -55,7 +55,7 @@ const handle = ref<HTMLElement | null>(null)
       </a-layout>
       <div class="fixed bottom-0 z-99 w-full px-0 md:hidden">
         <div
-          class="relative z-15 mx-auto w-auto flex items-center border border-slate-2/55 rounded-0 bg-slate-1/95 py-1 text-slate-500 dark:border-slate-9/55 dark:bg-black/95 dark:text-slate-200"
+          class="relative z-15 mx-auto w-auto flex items-center border-t-1px border-slate-3/65 rounded-0 bg-slate-1/95 py-1.25 text-slate-500 dark:border-zinc-8/65 dark:bg-black/95 dark:text-slate-200"
         >
           <div class="flex flex-auto items-center justify-evenly">
             <a-button
