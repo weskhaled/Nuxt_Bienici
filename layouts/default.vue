@@ -2,9 +2,35 @@
 import { UseDraggable as Draggable } from '@vueuse/components'
 
 // import { promiseTimeout } from '@vueuse/core'
-import { layoutBoxed, mdAndSmaller, sideFixed, smAndSmaller } from '~/common/stores/index'
+import { mdAndSmaller, sideFixed, smAndSmaller } from '~/common/stores/index'
 
 const { width: windowWidth, height: windowHeight } = useWindowSize()
+const color = useColorMode()
+
+useHead({
+  meta: [{
+    id: 'theme-color',
+    name: 'theme-color',
+    content: () => color.value === 'dark' ? '#222222' : '#ffffff',
+  }],
+})
+
+function toggleDark() {
+  color.preference = color.value === 'dark' ? 'light' : 'dark'
+
+  if (color.preference === 'light')
+    document?.body.removeAttribute('arco-theme')
+
+  else
+    document?.body.setAttribute('arco-theme', 'dark')
+}
+
+onMounted(() => {
+  if (color.preference === 'light')
+    document?.body.removeAttribute('arco-theme')
+  else
+    document?.body.setAttribute('arco-theme', 'dark')
+})
 
 const popupVisible = ref(false)
 const handle = ref<HTMLElement | null>(null)
@@ -12,13 +38,13 @@ const handle = ref<HTMLElement | null>(null)
 </script>
 
 <template>
-  <div class="mx-auto bg-light-1 shadow-md shadow-slate-2/25 transition-width dark:bg-dark-9 dark:shadow-slate-8/25" :class="[layoutBoxed ? 'md:container' : 'w-full']">
+  <div class="mx-auto transition-width">
     <a-layout class="relative font-sans">
       <a-layout>
-        <a-layout-header class="5xl:container fixed z-99 mx-auto w-full bg-white/75 backdrop-blur backdrop-filter dark:bg-black/75" :class="[layoutBoxed ? 'md:container' : 'w-full']">
+        <a-layout-header class="5xl:container fixed z-99 mx-auto hidden w-full bg-white/75 backdrop-blur backdrop-filter md:block dark:bg-black/75">
           <LayoutHeader class="" />
         </a-layout-header>
-        <a-layout class="ml-0 flex flex-col transition-margin !mt-14.5" :class="[sideFixed ? (smAndSmaller ? '!md:ml-0' : '!md:ml-60') : '!md:ml-0']">
+        <a-layout class="ml-0 flex flex-col transition-margin !md:mt-14.5" :class="[sideFixed ? (smAndSmaller ? '!md:ml-0' : '!md:ml-60') : '!md:ml-0']">
           <a-layout-content id="layoutMain" class="relative h-full overflow-hidden">
             <slot />
           </a-layout-content>
@@ -27,7 +53,52 @@ const handle = ref<HTMLElement | null>(null)
           <LayoutFooter />
         </a-layout-footer>
       </a-layout>
-
+      <div class="fixed bottom-0 z-99 w-full px-0 md:hidden">
+        <div
+          class="relative z-15 mx-auto w-auto flex items-center border border-slate-2/55 rounded-0 bg-slate-1/95 py-1 text-slate-500 dark:border-slate-9/55 dark:bg-black/95 dark:text-slate-200"
+        >
+          <div class="flex flex-auto items-center justify-evenly">
+            <a-button
+              shape="circle" class="block !h-11 !w-11" type="text" aria-label="FavoriteList"
+            >
+              <template #icon>
+                <span i-carbon-user-avatar class="" />
+              </template>
+            </a-button>
+            <a-button
+              shape="circle" class="block !h-11 !w-11" type="text" aria-label="Previous"
+            >
+              <template #icon>
+                <span i-carbon-settings class="" />
+              </template>
+            </a-button>
+          </div>
+          <a-button
+            long
+            class="mx-auto mb-0 flex flex-none items-center justify-center rounded-full shadow-sm ring-1 ring-slate-900/5 -my-3 !h-15 !w-15 dark:text-slate-1 lg:-my-3"
+            type="primary"
+            shape="circle" @click="async() => await $router.push('/')"
+          >
+            <span i-carbon-home class="text-2xl" />
+          </a-button>
+          <div class="flex flex-auto items-center justify-evenly">
+            <a-button
+              shape="circle" class="block xl:block !h-11 !w-11" type="text" aria-label="Next"
+            >
+              <template #icon>
+                <span i-carbon-earth class="" />
+              </template>
+            </a-button>
+            <a-tooltip content="Toggle Dark mode" position="tr" mini>
+              <a-button shape="circle" class="block !h-11 !w-11" type="text" @click="toggleDark()">
+                <template #icon>
+                  <span class="i-carbon-sun dark:i-carbon-moon block h-5 w-5 text-sm" />
+                </template>
+              </a-button>
+            </a-tooltip>
+          </div>
+        </div>
+      </div>
       <ClientOnly>
         <Draggable
           storage-key="vueuse-draggable" storage-type="session"

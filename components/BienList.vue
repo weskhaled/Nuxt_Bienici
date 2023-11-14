@@ -10,6 +10,7 @@ interface Props {
   viewInMap?: boolean
   filtersQuery?: any
   bienLocalizations?: []
+  selectedBienId?: any
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,13 +19,18 @@ const props = withDefaults(defineProps<Props>(), {
   viewInMap: () => false,
   filtersQuery: () => {},
   bienLocalizations: () => [],
+  selectedBienId: () => null,
 })
 
 const emit = defineEmits(['selectBien', 'update:layoutView', 'update:selectedBien', 'update:viewInMap', 'update:bienLocalizations'])
 
-const { layoutView, selectedBien, viewInMap, filtersQuery, bienLocalizations } = useVModels(props, emit)
+const { layoutView, selectedBien, selectedBienId, viewInMap, filtersQuery, bienLocalizations } = useVModels(props, emit)
 
 const { client: urqlClient } = useClientHandle()
+
+const listBienRef = ref<HTMLElement | null>(null)
+
+const { y: yListBienRef } = useScroll(listBienRef)
 
 const variables: Ref<any> = ref({
   input: {
@@ -167,7 +173,12 @@ async function getData(variables: any) {
         if (getManyBiens) {
           listBiens.value = getManyBiens.data
           total.value = getManyBiens.total
-          bienLocalizations.value = getManyBiens.data.map(b => ({ city: b.city, price: b.price, position: b.blurInfo?.position }))
+          bienLocalizations.value = getManyBiens.data.map(b => ({
+            id: b.id,
+            city: b.city,
+            price: b.price,
+            position: b.blurInfo?.position,
+          }))
         }
       }
     }
@@ -198,9 +209,21 @@ watchDebounced(
   },
   { debounce: 200, maxWait: 1000 },
 )
-watchDebounced(selectedBien, (value) => {
-  emit('selectBien', { bien: value })
-}, { debounce: 100, maxWait: 1000 })
+
+watch(() => selectedBienId.value, (val) => {
+  if (!val) {
+    selectedBien.value = null
+  }
+
+  else {
+    selectedBien.value = listBiens.value.find(b => b.id === val) || null
+    const el = document.getElementById(val)
+    if (el) {
+      const { top } = useElementBounding(el)
+      yListBienRef.value += (top.value - 150)
+    }
+  }
+})
 </script>
 
 <template>
@@ -218,7 +241,7 @@ watchDebounced(selectedBien, (value) => {
     </div>
   </template>
   <div
-    class="top-0 z-10 h-full w-full flex flex-col p-0"
+    class="top-0 z-10 h-full w-full flex flex-col overflow-hidden p-0" :class="[layoutView === 'MAP' && 'lt-md:rounded-t-md']"
   >
     <div
       class="relative h-full w-full flex-1 overflow-hidden border-gray/25 rounded-0 bg-white/95 shadow-black/10 shadow-sm dark:bg-dark-8/95"
@@ -243,7 +266,7 @@ watchDebounced(selectedBien, (value) => {
           </a-button>
         </div>
       </div>
-      <div class="content h-[calc(100%-2.585rem)] w-full flex flex-1 flex-col overflow-auto">
+      <div ref="listBienRef" class="content h-[calc(100%-2.585rem)] w-full flex flex-1 flex-col overflow-auto">
         <div class="flex-none px-2 py-1">
           <div class="flex flex-col md:flex-row space-y-1 md:space-x-1 md:space-y-0">
             <a-select v-model="filters.filterType" class="w-full !md:max-w-40" placeholder="Votre projet" :bordered="true">
@@ -336,7 +359,13 @@ watchDebounced(selectedBien, (value) => {
           <div class="sticky top-0 z-30 bg-slate-1/90 shadow-[0_0_0_1px_var(--color-bg-3)] shadow-sm backdrop-blur backdrop-filter dark:bg-dark-8/95">
             <div class="flex items-center justify-between p-2">
               <h4 class="sm:flex-0 overflow-hidden truncate">
-                {{ total || 0 }} {{ filters.filterType === 'RENT' ? 'Location' : 'Achat' }} en {{ filters.optionsPlaceValue.map(s => s.label).join(', ') }}
+                {{ total || 0 }} {{ filters.filterType === 'RENT' ? 'Location' : 'Achat' }} en&nbsp;
+                <span v-if="filters.optionsPlaceValue.length">
+                  {{ filters.optionsPlaceValue.map(s => s.label).join(', ') }}
+                </span>
+                <span v-else>
+                  France
+                </span>
               </h4>
               <div class="w-60 w-full flex items-center">
                 <div class="flex flex-1 items-center">
@@ -381,7 +410,7 @@ watchDebounced(selectedBien, (value) => {
             <template v-else>
               <div v-if="listBiens && !errorBiens && !isFetching" class="h-full p-2">
                 <div class="grid grid-cols-1 gap-2" :class="[layoutView === 'GALLERY' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5' : 'md:grid-cols-2']">
-                  <div v-for="item in listBiens" :key="item.id">
+                  <div v-for="item in listBiens" :id="item.id" :key="item.id">
                     <a-card
                       class="w-full overflow-hidden !rounded-2px !bg-zinc-1 !dark:bg-zinc-9 ![&>.arco-card-body]:p-0" :bordered="false"
                       :class="[selectedBien?.id === item.id && '[&_.selected]:(bg-blue-1 dark:bg-blue-5)']"

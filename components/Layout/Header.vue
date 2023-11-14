@@ -203,7 +203,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
       </div>
       <div class="flex items-center space-x-1">
         <div class="hidden md:flex">
-          <a-button class="" type="text" @click.stop="async() => await toggleFullscreen()">
+          <a-button class="mr-1" shape="circle" type="text" @click.stop="async() => await toggleFullscreen()">
             <template #icon>
               <span :class="[isFullscreen ? 'i-carbon-minimize' : 'i-carbon-center-to-fit']" />
             </template>
@@ -216,7 +216,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
                 </span>
               </template>
               <a-trigger trigger="click" show-arrow :popup-translate="[130, 5]" class="!fixed !top-12 [&_.arco-trigger-arrow]:bg-zinc-4/20">
-                <a-button shape="circle" class="mx-1" size="small" type="text">
+                <a-button shape="circle" class="" size="small" type="text">
                   <template #icon>
                     <span i-carbon-earth-filled />
                   </template>
@@ -247,9 +247,9 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
             </template>
           </a-button>
         </a-tooltip>
-        <div class="border-l border-zinc-4/20 pl-1">
+        <div class="border-l border-zinc-4/20 pl-2">
           <a-dropdown trigger="hover">
-            <a-button class="px-2" type="text">
+            <a-button shape="round" status="success" class="!px-1.5">
               <span class="flex items-center">
                 <span class="i-carbon-user-avatar-filled mr-1 inline-block h-4 w-4 text-sm leading-30px" />
                 <span sm:inline-block>
