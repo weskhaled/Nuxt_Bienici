@@ -95,6 +95,7 @@ type Bien {
   id: String
   photos: [Photo]!
   description: String
+  propertyType: String
   floor: Int
   roomsQuantity: JSON
   price: JSON

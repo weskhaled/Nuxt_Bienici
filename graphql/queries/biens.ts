@@ -11,6 +11,8 @@ query getManyBiens($input: GetManyInput) {
       yearOfConstruction
       surfaceArea
       roomsQuantity
+      propertyType
+      postalCode
       photos {
         url
         photo

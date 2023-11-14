@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { gql, useClientHandle } from '@urql/vue'
+import { UseImage } from '@vueuse/components'
 import { FilterType, KeySort, PropertyType, getManyPlaces, queryGetManyBiens } from '~/graphql/queries'
 import { mdAndLarger, mdAndSmaller } from '~/common/stores'
 
@@ -91,7 +92,7 @@ const srcListImgs = ref([])
 const optionsPlaces = ref([])
 const loadingPlaces = ref(false)
 const errorBiens = ref(null)
-const listBiens = ref([])
+const listBiens: Ref<any[]> = ref([])
 const total = ref(0)
 const isFetching = ref(true)
 const toggleViewInMap = useToggle(viewInMap)
@@ -166,7 +167,7 @@ async function getData(variables: any) {
         if (getManyBiens) {
           listBiens.value = getManyBiens.data
           total.value = getManyBiens.total
-          bienLocalizations.value = getManyBiens.data.map(b => ({ city: b.city, position: b.blurInfo?.position }))
+          bienLocalizations.value = getManyBiens.data.map(b => ({ city: b.city, price: b.price, position: b.blurInfo?.position }))
         }
       }
     }
@@ -204,7 +205,7 @@ watchDebounced(selectedBien, (value) => {
 
 <template>
   <template v-if="viewInMap">
-    <div v-if="layoutView === 'LIST' || mdAndSmaller" class="absolute right-0 top-0 z-21 h-full w-full bg-light/50 transition-all duration-400 dark:bg-black/70" @click="toggleViewInMap()" />
+    <div v-if="layoutView !== 'MAP' || mdAndSmaller" class="absolute right-0 top-0 z-21 h-full w-full bg-light/50 transition-all duration-400 dark:bg-black/70" @click="toggleViewInMap()" />
 
     <div class="absolute z-9" :class="[layoutView === 'MAP' ? 'left-0 top--10' : 'left--3rem top-0']">
       <a-tooltip content="Toggle Map" position="br" mini>
@@ -334,13 +335,10 @@ watchDebounced(selectedBien, (value) => {
         <div class="flex-1 bg-white dark:bg-dark-3">
           <div class="sticky top-0 z-30 bg-slate-1/90 shadow-[0_0_0_1px_var(--color-bg-3)] shadow-sm backdrop-blur backdrop-filter dark:bg-dark-8/95">
             <div class="flex items-center justify-between p-2">
-              <div class="sm:flex-0 hidden sm:flex">
-                {{ total || 0 }} biens en France
-              </div>
-              <div class="w-full flex items-center sm:w-90">
-                <span class="flex-none">
-                  Trier par: &nbsp;
-                </span>
+              <h4 class="sm:flex-0 overflow-hidden truncate">
+                {{ total || 0 }} {{ filters.filterType === 'RENT' ? 'Location' : 'Achat' }} en {{ filters.optionsPlaceValue.map(s => s.label).join(', ') }}
+              </h4>
+              <div class="w-60 w-full flex items-center">
                 <div class="flex flex-1 items-center">
                   <a-select v-model="filters.sortBy" class="flex-1" size="small" placeholder="Pertinence" :bordered="true">
                     <a-option v-for="sk in KeySort" :key="sk" :value="sk">
@@ -384,43 +382,69 @@ watchDebounced(selectedBien, (value) => {
               <div v-if="listBiens && !errorBiens && !isFetching" class="h-full p-2">
                 <div class="grid grid-cols-1 gap-2" :class="[layoutView === 'GALLERY' ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5' : 'md:grid-cols-2']">
                   <div v-for="item in listBiens" :key="item.id">
-                    <a-card class="w-full bg-slate-1 dark:bg-black ![&>.arco-card-body]:p-0" :hoverable="true">
+                    <a-card
+                      class="w-full overflow-hidden !rounded-2px !bg-zinc-1 !dark:bg-zinc-9 ![&>.arco-card-body]:p-0" :bordered="false"
+                      :class="[selectedBien?.id === item.id && '[&_.selected]:(bg-blue-1 dark:bg-blue-5)']"
+                      hoverable
+                    >
                       <template #cover>
                         <a-carousel
                           :style="{
                             width: '100%',
                             height: '160px',
                           }"
-                          class="![&_.arco-carousel-arrow>div]:bg-black/60"
+                          class="border-b-1px border-zinc-3 bg-slate-3 dark:border-zinc-8 dark:bg-dark-9 ![&_.arco-carousel-arrow>div]:bg-black/60"
                           :auto-play="{ interval: 15000, hoverToPause: true }" indicator-type="dot"
                           show-arrow="hover" animation-name="fade"
                         >
                           <a-carousel-item v-for="(image, index) in item.photos.slice(0, 3)" :key="image.url">
-                            <img
-                              :src="image.url_photo"
-                              :style="{
-                                width: '100%',
-                              }"
+                            <div
+                              class="h-full w-full flex items-center justify-center"
                               @click="() => {
                                 srcListImgs = item.photos.map((image) => image.url_photo)
                                 currentImg = index
                                 visibleImg = true
                               }"
                             >
+                              <UseImage
+                                class="h-auto w-full"
+                                :src="image.url_photo"
+                              >
+                                <template #loading>
+                                  <a-spin />
+                                </template>
+
+                                <template #error>
+                                  <span class="flex items-center overflow-hidden truncate text-gray-4">
+                                    <h4>Image Not found</h4>
+                                  </span>
+                                </template>
+                              </UseImage>
+                            </div>
                           </a-carousel-item>
                         </a-carousel>
                       </template>
                       <div
-                        class="min-h-35 flex flex-col justify-between dark:text-gray-2"
-                        :class="[selectedBien?.id === item.id && 'bg-blue-2 dark:bg-blue-5']"
+                        class="min-h-35 flex flex-col justify-between"
+                        :class="[selectedBien?.id === item.id && 'selected']"
                       >
-                        <div class="flex-1 cursor-pointer p-2 pb-0" @click="() => (selectedBien?.id !== item.id ? (selectedBien = item, viewInMap = true) : selectedBien = null)">
+                        <div class="flex flex-1 flex-col cursor-pointer p-2 pb-0" @click="() => (selectedBien?.id !== item.id ? (selectedBien = item, viewInMap = true) : selectedBien = null)">
                           <h3 mb-2 text-3.9>
-                            {{ `Appartement ${item.roomsQuantity} pièce ${item.surfaceArea} m²` }}
+                            {{ `${item.propertyType === 'house' ? 'Maison' : (item.propertyType === 'flat' ? 'Appartement' : 'Local')} ${item.roomsQuantity} pièce ${item.surfaceArea} m²` }}
                           </h3>
-                          <p>
-                            {{ `${item.price}€ par mois charges comprises` }}
-                          </p>
+                          <div h-full flex flex-1 items-end justify-end>
+                            <h4>
+                              <span class="text-lg">
+                                {{ item.price }}
+                              </span>
+                              <sup>
+                                €
+                              </sup>
+                            </h4>
+                          </div>
+                          <div>
+                            <h5 />
+                          </div>
                         </div>
                         <div class="mx--0 flex justify-between bg-light-9/35 p-2 dark:bg-dark-9/35">
                           <div flex-0 flex items-center overflow-hidden truncate text-ellipsis>

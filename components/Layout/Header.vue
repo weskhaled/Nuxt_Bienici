@@ -231,7 +231,7 @@ const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
                         Read All
                       </a-button>
                     </div>
-                    <div class="relative min-h-45 flex overflow-hidden overflow-y-scroll">
+                    <div class="relative min-h-45 flex overflow-hidden overflow-y-auto">
                       <a-empty class="flex flex-col justify-center" />
                     </div>
                   </div>
