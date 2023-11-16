@@ -49,7 +49,7 @@
     "@types/ws": "^8.5.8",
     "@unocss/eslint-config": "^0.56.5",
     "@unocss/nuxt": "^0.56.5",
-    "@vite-pwa/nuxt": "^0.1.1",
+    "@vite-pwa/nuxt": "^0.2.3",
     "@vueuse/nuxt": "^10.6.1",
     "consola": "^3.2.3",
     "cross-env": "^7.0.3",

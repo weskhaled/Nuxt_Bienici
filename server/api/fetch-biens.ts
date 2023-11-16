@@ -19,7 +19,7 @@ const filters = {
 export default defineEventHandler(async (event) => {
   if (event.node.req.method === 'GET') {
     const { data } = await getBiens(filters)
-    insertMultiEstate(data)
+    // insertMultiEstate(data)
     return data
   }
 })

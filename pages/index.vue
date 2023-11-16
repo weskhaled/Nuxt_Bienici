@@ -38,8 +38,9 @@ const sliders: Ref<any[]> = ref([
 async function handleSearch(filters: any) {
   const { filterType, zoneIds } = filters
   await router.push(`/search?filters=${encodeURIComponent(JSON.stringify({
-    filterType,
-    zoneIds: zoneIds.map((zoneId: any) => zoneId),
+    filterType: filterType === 'TERRAIN' ? 'BUY' : (filterType === 'NEW' ? 'NEW' : 'RENT'),
+    zoneIdsByTypes: zoneIds,
+    propertyType: filterType === 'TERRAIN' ? ['TERRAIN'] : [],
   }))}`)
 }
 </script>

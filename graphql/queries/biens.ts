@@ -9,6 +9,7 @@ query getManyBiens($input: GetManyInput) {
       price
       id
       yearOfConstruction
+      modificationDate
       surfaceArea
       roomsQuantity
       propertyType

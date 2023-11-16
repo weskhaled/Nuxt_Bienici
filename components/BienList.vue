@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectedBienId: () => null,
 })
 
-const emit = defineEmits(['selectBien', 'update:layoutView', 'update:selectedBien', 'update:viewInMap', 'update:bienLocalizations'])
+const emit = defineEmits(['selectBien', 'update:layoutView', 'update:selectedBien', 'update:filtersQuery', 'update:viewInMap', 'update:bienLocalizations'])
 
 const { layoutView, selectedBien, selectedBienId, viewInMap, filtersQuery, bienLocalizations } = useVModels(props, emit)
 
@@ -40,9 +40,9 @@ const variables: Ref<any> = ref({
       perPage: 24,
     },
     filters: {
-      propertyType: ['TERRAIN'].includes(filtersQuery?.value.filterType) ? [filtersQuery.value?.filterType] : [],
-      filterType: ['RENT', 'BUY'].includes(filtersQuery?.value.filterType) ? filtersQuery.value?.filterType : 'BUY',
-      zoneIdsByTypes: { zoneIds: filtersQuery.value.zoneIds?.map(z => z.extra.zoneIds) || [] },
+      propertyType: filtersQuery.value?.propertyType || [],
+      filterType: ['RENT', 'BUY'].includes(filtersQuery.value?.filterType) ? filtersQuery.value?.filterType : 'BUY',
+      zoneIdsByTypes: { zoneIds: filtersQuery.value?.zoneIdsByTypes?.map(z => z.extra.zoneIds) || [] },
       newProperty: filtersQuery.value.filterType === 'NEW',
     },
   },
@@ -106,10 +106,10 @@ const filters = reactive(
   {
     size: 24,
     from: 0,
-    optionsPlaceValue: filtersQuery.value?.zoneIds || [],
+    optionsPlaceValue: filtersQuery.value?.zoneIdsByTypes || [],
     showAllModels: false,
     filterType: ['RENT', 'BUY', 'NEW'].includes(filtersQuery?.value.filterType) ? filtersQuery.value?.filterType : (filtersQuery?.value.filterType === 'TERRAIN' ? 'BUY' : 'RENT'),
-    propertyType: ['TERRAIN'].includes(filtersQuery?.value.filterType) ? [filtersQuery.value?.filterType] : [],
+    propertyType: filtersQuery.value?.propertyType || [],
     minPrice: 0,
     maxPrice: 0,
     minRooms: 1,
@@ -145,9 +145,9 @@ function handleSearch(value: string) {
       else if (data) {
         if (data.getManyPlaces) {
           optionsPlaces.value = data.getManyPlaces.data?.map(item => ({
-            value: item.id,
+            value: item.name,
             label: item.name,
-            extra: { postalCodes: item.postalCodes, zoneIds: item.zoneIds[0] },
+            extra: { id: item.id, postalCodes: item.postalCodes, zoneIds: item.zoneIds[0] },
           }))
         }
       }
@@ -179,6 +179,7 @@ async function getData(variables: any) {
             price: b.price,
             position: b.blurInfo?.position,
           }))
+          selectedBien.value = listBiens.value.find(b => b.id === selectedBienId.value)
         }
       }
     }
@@ -190,6 +191,13 @@ getData(variables.value)
 watchDebounced(
   filters,
   (value) => {
+    const filtersArgs = {
+      propertyType: value.propertyType,
+      filterType: value.filterType === 'RENT' ? 'RENT' : 'BUY',
+      newProperty: value.filterType === 'NEW',
+      zoneIdsByTypes: filters.optionsPlaceValue,
+    }
+    console.log(filtersArgs)
     variables.value = {
       input: {
         sort: { direction: value.sortOrder, key: value.sortBy },
@@ -198,13 +206,12 @@ watchDebounced(
           perPage: value.size,
         },
         filters: {
-          propertyType: value.propertyType,
-          filterType: value.filterType === 'RENT' ? 'RENT' : 'BUY',
-          newProperty: value.filterType === 'NEW',
+          ...filtersArgs,
           zoneIdsByTypes: { zoneIds: filters.optionsPlaceValue.map(item => item.extra?.zoneIds) },
         },
       },
     }
+    filtersQuery.value = JSON.stringify(filtersArgs)
     getData(variables.value)
   },
   { debounce: 200, maxWait: 1000 },
@@ -277,19 +284,27 @@ watch(() => selectedBienId.value, (val) => {
             <a-select
               v-model="filters.optionsPlaceValue"
               :max-tag-count="2"
+              :trigger-props="{
+                updateAtScroll: false,
+                scrollToClose: true,
+              }"
               placeholder="Saisissez une ville, un code postal ou un département"
               :scrollbar="true"
               allow-clear multiple :bordered="true"
               :loading="loadingPlaces" :filter-option="false" :show-extra-options="false"
               @search="handleSearch"
             >
-              <a-option v-for="item of optionsPlaces" :key="item.value" :value="item" :label="item.label" />
+              <a-option v-for="item of optionsPlaces" :key="item.extra.id || item.name" :value="item" :label="item.label" />
             </a-select>
           </div>
           <div class="mt-1 flex space-x-1">
             <div class="w-full md:w-2/6">
               <a-select
-                v-model="filters.propertyType" class="md:w-full" :default-value="[]" placeholder="Type de bien" multiple
+                v-model="filters.propertyType"
+                :trigger-props="{
+                  updateAtScroll: false,
+                  scrollToClose: true,
+                }" class="md:w-full" :default-value="[]" placeholder="Type de bien" multiple
                 :scrollbar="true" allow-clear :max-tag-count="2"
               >
                 <a-option v-for="pt in PropertyType" :key="pt" :value="pt">
@@ -298,7 +313,7 @@ watch(() => selectedBienId.value, (val) => {
               </a-select>
             </div>
             <div class="hidden md:w-full md:flex md:flex-1 md:space-x-1">
-              <a-trigger trigger="click" show-arrow>
+              <a-trigger trigger="click" show-arrow scroll-to-close>
                 <a-button class="w-1/3">
                   <span class="text-3">
                     Budget
@@ -369,7 +384,13 @@ watch(() => selectedBienId.value, (val) => {
               </h4>
               <div class="w-60 w-full flex items-center">
                 <div class="flex flex-1 items-center">
-                  <a-select v-model="filters.sortBy" class="flex-1" size="small" placeholder="Pertinence" :bordered="true">
+                  <a-select
+                    v-model="filters.sortBy" :trigger-props="{
+                      updateAtScroll: false,
+                      scrollToClose: true,
+                    }"
+                    class="flex-1" size="small" placeholder="Pertinence" :bordered="true"
+                  >
                     <a-option v-for="sk in KeySort" :key="sk" :value="sk">
                       {{ sk.toLowerCase() }}
                     </a-option>

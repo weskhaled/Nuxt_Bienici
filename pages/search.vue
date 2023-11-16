@@ -10,15 +10,15 @@ let markers: any = []
 let latlngbounds: any = null
 
 const selectedBienIdRouteQuery = useRouteQuery('bienId')
-const filtersQuery = useRouteQuery('filters', '')
-const filters = computed(() => {
-  try {
-    return JSON.parse(decodeURIComponent(filtersQuery.value))
-  }
-  catch (error) {
-    return {}
-  }
-})
+const filtersQuery = useRouteQuery('filters', '{}', { transform: value => JSON.parse(decodeURIComponent(value)) })
+// const filters = computed(() => {
+//   try {
+//     return JSON.parse(decodeURIComponent(filtersQuery.value))
+//   }
+//   catch (error) {
+//     return {}
+//   }
+// })
 const layoutView = ref('MAP')
 const viewInMap = ref(false)
 const selectedBien: Ref<any> = ref(null)
@@ -130,7 +130,7 @@ watch(() => selectedBien.value, (val) => {
         </div>
         <div :class="[layoutView !== 'MAP' ? 'w-2/2' : 'md:w-4/6 lg:w-1/2', layoutView === 'MAP' && 'lt-md:top-40% lt-md:h-60%', viewInMap ? (layoutView === 'MAP' ? 'lt-md:translate-y-[calc(100%-70px)] shadow-md' : 'translate-x-[calc(100%-50px)] shadow-md') : 'translate-0']" class="relative z-5 ml-auto w-full flex transition-all-200">
           <ClientOnly>
-            <BienList v-model:bienLocalizations="bienLocalizations" v-model:selectedBienId="selectedBienIdRouteQuery" v-model:filters-query="filters" v-model:layoutView="layoutView" v-model:viewInMap="viewInMap" v-model:selectedBien="selectedBien" />
+            <BienList v-model:bienLocalizations="bienLocalizations" v-model:selectedBienId="selectedBienIdRouteQuery" v-model:filters-query="filtersQuery" v-model:layoutView="layoutView" v-model:viewInMap="viewInMap" v-model:selectedBien="selectedBien" />
           </ClientOnly>
         </div>
       </div>

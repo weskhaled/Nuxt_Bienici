@@ -44,7 +44,7 @@ const handle = ref<HTMLElement | null>(null)
         <a-layout-header class="5xl:container fixed z-99 mx-auto hidden w-full bg-white/75 backdrop-blur backdrop-filter md:block dark:bg-black/75">
           <LayoutHeader class="" />
         </a-layout-header>
-        <a-layout class="ml-0 flex flex-col transition-margin !md:mt-14.5" :class="[sideFixed ? (smAndSmaller ? '!md:ml-0' : '!md:ml-60') : '!md:ml-0']">
+        <a-layout class="ml-0 flex flex-col transition-margin !md:mt-14.5">
           <a-layout-content id="layoutMain" class="relative h-full overflow-hidden">
             <slot />
           </a-layout-content>

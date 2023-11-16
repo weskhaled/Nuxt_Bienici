@@ -90,7 +90,7 @@ function handleSearch() {
             @popup-visible-change="(visible) => emit('popupVisibleChange', visible) "
             @search="handleSearchPlaces"
           >
-            <a-option v-for="item of optionsPlaces" :key="item.value" :value="item" :label="item.label" />
+            <a-option v-for="item of optionsPlaces" :key="item.extra?.id || item.name" :value="item" :label="item.label" />
           </a-select>
         </div>
         <div class="flex-0">
