@@ -36,11 +36,26 @@ export const pwa: ModuleOptions = {
     ],
   },
   workbox: {
-    globPatterns: ['**/*.{js,css,html,txt,png,ico,svg}'],
-    navigateFallbackDenylist: [/^\/api\//],
+    globPatterns: ['**/*.{js,ts,css,scss,less,png,webp,svg,mp4,vue,ico}'],
+    // navigateFallbackDenylist: [/^\/api\//],
+    navigateFallbackDenylist: [/^\/api\//, /^\/search\//],
     navigateFallback: '/',
     cleanupOutdatedCaches: true,
     runtimeCaching: [
+      {
+        urlPattern: ({ url, sameOrigin }) => sameOrigin && url.pathname.match(/^\/search\/.*/i),
+        handler: 'NetworkOnly',
+        options: {
+          matchOptions: {
+            ignoreVary: true,
+            ignoreSearch: true,
+          },
+          plugins: [{
+            handlerDidError: async () => Response.redirect('/error', 302),
+            cacheWillUpdate: async () => null,
+          }],
+        },
+      },
       {
         urlPattern: /^https:\/\/fonts.googleapis.com\/.*/i,
         handler: 'CacheFirst',
@@ -76,5 +91,8 @@ export const pwa: ModuleOptions = {
   devOptions: {
     enabled: process.env.VITE_PLUGIN_PWA === 'true',
     navigateFallback: scope,
+    suppressWarnings: true,
+    navigateFallbackAllowlist: [/^\/$/],
+    type: 'module',
   },
 }
