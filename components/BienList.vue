@@ -197,7 +197,7 @@ watchDebounced(
       newProperty: value.filterType === 'NEW',
       zoneIdsByTypes: filters.optionsPlaceValue,
     }
-    console.log(filtersArgs)
+
     variables.value = {
       input: {
         sort: { direction: value.sortOrder, key: value.sortBy },
@@ -447,18 +447,18 @@ watch(() => selectedBienId.value, (val) => {
                           :auto-play="{ interval: 15000, hoverToPause: true }" indicator-type="dot"
                           show-arrow="hover" animation-name="fade"
                         >
-                          <a-carousel-item v-for="(image, index) in item.photos.slice(0, 3)" :key="image.url">
+                          <a-carousel-item v-for="(image, index) in item.photos.slice(0, 2)" :key="image.url">
                             <div
                               class="h-full w-full flex items-center justify-center"
                               @click="() => {
-                                srcListImgs = item.photos.map((image) => image.url_photo)
+                                srcListImgs = item.photos.map((image) => `/api/image-resize?imageURL=${image.url_photo}&width=900&height=800`)
                                 currentImg = index
                                 visibleImg = true
                               }"
                             >
                               <UseImage
                                 class="h-auto w-full"
-                                :src="image.url_photo"
+                                :src="`/api/image-resize?imageURL=${image.url_photo}&width=350&height=180`"
                               >
                                 <template #loading>
                                   <a-spin />
